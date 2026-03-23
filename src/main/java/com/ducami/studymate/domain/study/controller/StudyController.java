@@ -5,6 +5,7 @@ import com.ducami.studymate.domain.study.dto.response.StudyResponse;
 import com.ducami.studymate.domain.study.dto.response.StudySummaryResponse;
 import com.ducami.studymate.domain.study.dto.request.UpdateStudyRequest;
 import com.ducami.studymate.domain.study.service.StudyService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,7 +36,7 @@ public class StudyController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody CreateStudyRequest request) {
+    public ResponseEntity<Void> create(@RequestBody @Valid CreateStudyRequest request) {
         studyService.save(request);
         return ResponseEntity.status(201).build();
     }
