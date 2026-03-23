@@ -2,6 +2,7 @@ package com.ducami.studymate.domain.study.entity;
 
 import com.ducami.studymate.domain.study.dto.request.CreateStudyRequest;
 import com.ducami.studymate.domain.study.dto.request.UpdateStudyRequest;
+import com.ducami.studymate.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 @Entity(name = "tb_studies")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class StudyEntity {
+public class StudyEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
