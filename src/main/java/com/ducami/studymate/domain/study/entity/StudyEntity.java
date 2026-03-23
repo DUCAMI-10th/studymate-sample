@@ -1,7 +1,7 @@
 package com.ducami.studymate.domain.study.entity;
 
-import com.ducami.studymate.domain.study.dto.CreateStudyRequest;
-import com.ducami.studymate.domain.study.dto.UpdateStudyRequest;
+import com.ducami.studymate.domain.study.dto.request.CreateStudyRequest;
+import com.ducami.studymate.domain.study.dto.request.UpdateStudyRequest;
 import jakarta.persistence.*;
 import lombok.*;
 

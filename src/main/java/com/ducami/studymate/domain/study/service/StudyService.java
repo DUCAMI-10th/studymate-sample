@@ -1,9 +1,9 @@
 package com.ducami.studymate.domain.study.service;
 
-import com.ducami.studymate.domain.study.dto.CreateStudyRequest;
-import com.ducami.studymate.domain.study.dto.StudyResponse;
-import com.ducami.studymate.domain.study.dto.StudySummaryResponse;
-import com.ducami.studymate.domain.study.dto.UpdateStudyRequest;
+import com.ducami.studymate.domain.study.dto.request.CreateStudyRequest;
+import com.ducami.studymate.domain.study.dto.response.StudyResponse;
+import com.ducami.studymate.domain.study.dto.response.StudySummaryResponse;
+import com.ducami.studymate.domain.study.dto.request.UpdateStudyRequest;
 
 import java.util.List;
 

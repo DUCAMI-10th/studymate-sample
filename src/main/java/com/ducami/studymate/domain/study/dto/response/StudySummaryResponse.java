@@ -1,4 +1,4 @@
-package com.ducami.studymate.domain.study.dto;
+package com.ducami.studymate.domain.study.dto.response;
 
 import com.ducami.studymate.domain.study.entity.StudyEntity;
 import lombok.AllArgsConstructor;

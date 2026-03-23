@@ -1,9 +1,9 @@
 package com.ducami.studymate.domain.study.controller;
 
-import com.ducami.studymate.domain.study.dto.CreateStudyRequest;
-import com.ducami.studymate.domain.study.dto.StudyResponse;
-import com.ducami.studymate.domain.study.dto.StudySummaryResponse;
-import com.ducami.studymate.domain.study.dto.UpdateStudyRequest;
+import com.ducami.studymate.domain.study.dto.request.CreateStudyRequest;
+import com.ducami.studymate.domain.study.dto.response.StudyResponse;
+import com.ducami.studymate.domain.study.dto.response.StudySummaryResponse;
+import com.ducami.studymate.domain.study.dto.request.UpdateStudyRequest;
 import com.ducami.studymate.domain.study.service.StudyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController
