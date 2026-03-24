@@ -1,3 +1,9 @@
 spring:
   application:
     name: studymate
+
+jwt:
+  issuer: studymate
+  secret: ${JWT_SECRET:studymate-jwt-secret-key-that-is-long-enough-for-hs256}
+  access-token-expiration: 1800000
+  refresh-token-expiration: 1209600000
