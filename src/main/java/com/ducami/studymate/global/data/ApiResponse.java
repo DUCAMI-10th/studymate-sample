@@ -1,27 +1,18 @@
 package com.ducami.studymate.global.data;
 
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ducami.studymate.global.exception.ErrorCode;
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Map;
 
-@Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ApiResponse<T> {
-    private final T data;
-    private final int status;
-    private final String message;
-
-    private ApiResponse(T data, int status, String message) {
-        this.data = data;
-        this.status = status;
-        this.message = message;
-    }
-
+public record ApiResponse<T>(
+        T data,
+        int status,
+        String message
+) {
     private static <T> ResponseEntity<ApiResponse<T>> response(HttpStatus httpStatus, T data, String message) {
         return ResponseEntity.status(httpStatus)
                 .body(new ApiResponse<>(data, httpStatus.value(), message));
@@ -61,17 +52,17 @@ public class ApiResponse<T> {
 
     public static ResponseEntity<ApiResponse<ErrorResponse>> error(ErrorCode errorCode) {
         ErrorResponse errorResponse = ErrorResponse.of(errorCode);
-        return response(errorCode.getHttpStatus(), errorResponse, errorResponse.getMessage());
+        return response(errorCode.getHttpStatus(), errorResponse, errorResponse.message());
     }
 
     public static ResponseEntity<ApiResponse<ErrorResponse>> error(ErrorCode errorCode, String message) {
         ErrorResponse errorResponse = ErrorResponse.of(errorCode, message);
-        return response(errorCode.getHttpStatus(), errorResponse, errorResponse.getMessage());
+        return response(errorCode.getHttpStatus(), errorResponse, errorResponse.message());
     }
 
     public static ResponseEntity<ApiResponse<ErrorResponse>> error(ErrorCode errorCode, Map<String, String> details) {
         ErrorResponse errorResponse = ErrorResponse.of(errorCode, details);
-        return response(errorCode.getHttpStatus(), errorResponse, errorResponse.getMessage());
+        return response(errorCode.getHttpStatus(), errorResponse, errorResponse.message());
     }
 
     public static ResponseEntity<ApiResponse<ErrorResponse>> error(
@@ -80,7 +71,6 @@ public class ApiResponse<T> {
             Map<String, String> details
     ) {
         ErrorResponse errorResponse = ErrorResponse.of(errorCode, message, details);
-        return response(errorCode.getHttpStatus(), errorResponse, errorResponse.getMessage());
+        return response(errorCode.getHttpStatus(), errorResponse, errorResponse.message());
     }
-
 }

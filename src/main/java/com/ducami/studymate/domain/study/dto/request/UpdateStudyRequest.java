@@ -1,11 +1,7 @@
 package com.ducami.studymate.domain.study.dto.request;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-@Getter
-@NoArgsConstructor
-public class UpdateStudyRequest {
-    private String title;
-    private String content;
+public record UpdateStudyRequest(
+        String title,
+        String content
+) {
 }

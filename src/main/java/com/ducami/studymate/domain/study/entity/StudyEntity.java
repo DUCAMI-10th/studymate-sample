@@ -24,12 +24,12 @@ public class StudyEntity extends BaseEntity {
     private String content;
 
     public StudyEntity(CreateStudyRequest request) {
-        this.title = request.getTitle();
-        this.content = request.getContent();
+        this.title = request.title();
+        this.content = request.content();
     }
 
     public void update(UpdateStudyRequest request) {
-        if (request.getTitle() != null) this.title = request.getTitle();
-        if (request.getContent() != null) this.content = request.getContent();
+        if (request.title() != null) this.title = request.title();
+        if (request.content() != null) this.content = request.content();
     }
 }
