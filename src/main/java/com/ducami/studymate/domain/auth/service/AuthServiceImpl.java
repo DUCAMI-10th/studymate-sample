@@ -9,7 +9,7 @@ import com.ducami.studymate.domain.user.exception.InvalidRefreshTokenException;
 import com.ducami.studymate.domain.user.repository.UserRepository;
 import com.ducami.studymate.global.security.jwt.JwtProvider;
 import com.ducami.studymate.global.security.jwt.JwtToken;
-import com.ducami.studymate.global.security.jwt.filter.TokenType;
+import com.ducami.studymate.global.security.jwt.enums.TokenType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

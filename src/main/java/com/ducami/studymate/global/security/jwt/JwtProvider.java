@@ -4,7 +4,7 @@ import com.ducami.studymate.domain.user.entity.UserEntity;
 import com.ducami.studymate.global.security.jwt.config.JwtProperties;
 import com.ducami.studymate.global.exception.ExpiredTokenException;
 import com.ducami.studymate.global.exception.InvalidTokenException;
-import com.ducami.studymate.global.security.jwt.filter.TokenType;
+import com.ducami.studymate.global.security.jwt.enums.TokenType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;

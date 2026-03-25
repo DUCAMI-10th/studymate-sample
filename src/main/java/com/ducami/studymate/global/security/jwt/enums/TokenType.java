@@ -1,4 +1,4 @@
-package com.ducami.studymate.global.security.jwt.filter;
+package com.ducami.studymate.global.security.jwt.enums;
 
 public enum TokenType {
     ACCESS,

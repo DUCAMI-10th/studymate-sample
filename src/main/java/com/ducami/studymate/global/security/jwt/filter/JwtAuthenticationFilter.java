@@ -3,6 +3,7 @@ package com.ducami.studymate.global.security.jwt.filter;
 import com.ducami.studymate.domain.user.entity.UserEntity;
 import com.ducami.studymate.domain.user.repository.UserRepository;
 import com.ducami.studymate.global.security.jwt.JwtProvider;
+import com.ducami.studymate.global.security.jwt.enums.TokenType;
 import com.ducami.studymate.global.security.principal.UserPrincipal;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
