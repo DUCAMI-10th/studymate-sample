@@ -2,6 +2,22 @@ spring:
   application:
     name: studymate
 
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        show-sql: false
+    open-in-view: false
+    defer-datasource-initialization: false
+
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/studymate}
+    username: ${DB_USERNAME:mates}
+    password: ${DB_PASSWORD:Mates123!@#}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
 jwt:
   issuer: studymate
   secret: ${JWT_SECRET:studymate-jwt-secret-key-that-is-long-enough-for-hs256}
