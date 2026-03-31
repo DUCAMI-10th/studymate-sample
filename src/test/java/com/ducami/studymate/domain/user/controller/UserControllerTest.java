@@ -151,16 +151,15 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("Access token 없이 보호된 API에 접근하면 401이 발생한다")
-    void accessDeniedWithoutToken() throws Exception {
+    @DisplayName("인증 없이도 스터디 API에 접근할 수 있다")
+    void accessWithoutToken() throws Exception {
         mockMvc.perform(get("/api/v1/studies"))
-                .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.status", is(401)))
-                .andExpect(jsonPath("$.data.code", is("GLOBAL_401")));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status", is(200)));
     }
 
     @Test
-    @DisplayName("Access token으로 보호된 API에 접근할 수 있다")
+    @DisplayName("Access token으로도 스터디 API에 접근할 수 있다")
     void accessWithToken() throws Exception {
         userRepository.save(UserEntity.builder()
                 .name("tester")

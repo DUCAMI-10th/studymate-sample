@@ -5,9 +5,8 @@ import com.ducami.studymate.domain.study.dto.response.StudyResponse;
 import com.ducami.studymate.domain.study.dto.response.StudySummaryResponse;
 import com.ducami.studymate.domain.study.dto.request.UpdateStudyRequest;
 import com.ducami.studymate.domain.study.entity.StudyEntity;
-import com.ducami.studymate.domain.study.exception.StudyStatusCode;
+import com.ducami.studymate.domain.study.exception.StudyNotFoundException;
 import com.ducami.studymate.domain.study.repository.StudyRepository;
-import com.ducami.studymate.global.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,9 +21,7 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     public StudyResponse findById(Long id) {
-        return studyRepository.findById(id)
-            .map(StudyResponse::toEntity)
-            .orElseThrow(() -> new BusinessException(StudyStatusCode.STUDY_NOT_FOUND));
+        return StudyResponse.toEntity(getStudy(id));
     }
 
     @Override
@@ -37,16 +34,13 @@ public class StudyServiceImpl implements StudyService {
     @Override
     @Transactional
     public void update(Long id, UpdateStudyRequest request) {
-        StudyEntity study = studyRepository.findById(id)
-            .orElseThrow(() -> new BusinessException(StudyStatusCode.STUDY_NOT_FOUND));
-
-        study.update(request);
+        getStudy(id).update(request);
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
-        studyRepository.deleteById(id);
+        studyRepository.delete(getStudy(id));
     }
 
     @Override
@@ -54,5 +48,10 @@ public class StudyServiceImpl implements StudyService {
     public Long save(CreateStudyRequest request) {
         StudyEntity entity = new StudyEntity(request);
         return studyRepository.save(entity).getId();
+    }
+
+    private StudyEntity getStudy(Long id) {
+        return studyRepository.findById(id)
+                .orElseThrow(StudyNotFoundException::new);
     }
 }

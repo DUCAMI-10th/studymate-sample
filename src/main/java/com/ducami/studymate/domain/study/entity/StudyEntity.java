@@ -2,9 +2,13 @@ package com.ducami.studymate.domain.study.entity;
 
 import com.ducami.studymate.domain.study.dto.request.CreateStudyRequest;
 import com.ducami.studymate.domain.study.dto.request.UpdateStudyRequest;
+import com.ducami.studymate.domain.todo.entity.TodoEntity;
 import com.ducami.studymate.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,6 +26,10 @@ public class StudyEntity extends BaseEntity {
 
     @Column(columnDefinition = "TEXT")
     private String content;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "study", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TodoEntity> todos = new ArrayList<>();
 
     public StudyEntity(CreateStudyRequest request) {
         this.title = request.title();
