@@ -3,7 +3,6 @@ package com.ducami.studymate.global.security.jwt.filter;
 import com.ducami.studymate.domain.user.entity.UserEntity;
 import com.ducami.studymate.domain.user.repository.UserRepository;
 import com.ducami.studymate.global.security.jwt.JwtProvider;
-import com.ducami.studymate.global.security.jwt.enums.TokenType;
 import com.ducami.studymate.global.security.principal.UserPrincipal;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -34,17 +33,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = extractToken(request);
 
-        if (token != null
-                && jwtProvider.validateToken(token)
-                && jwtProvider.isTokenType(token, TokenType.ACCESS)) {
-            userRepository.findByEmail(jwtProvider.getEmail(token))
-                    .ifPresent(user -> setAuthentication(user, request));
+        if (token != null && jwtProvider.validateToken(token)) {
+            userRepository.findById(jwtProvider.getUserId(token))
+                    .ifPresent(this::setAuthentication);
         }
 
         filterChain.doFilter(request, response);
     }
 
-    private void setAuthentication(UserEntity user, HttpServletRequest request) {
+    private void setAuthentication(UserEntity user) {
         UserPrincipal principal = new UserPrincipal(user);
         Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);

@@ -6,9 +6,11 @@ import com.ducami.studymate.domain.study.dto.response.StudySummaryResponse;
 import com.ducami.studymate.domain.study.dto.request.UpdateStudyRequest;
 import com.ducami.studymate.domain.study.service.StudyService;
 import com.ducami.studymate.global.data.ApiResponse;
+import com.ducami.studymate.global.security.principal.UserPrincipal;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,20 +39,30 @@ public class StudyController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> create(@RequestBody @Valid CreateStudyRequest request) {
-        studyService.save(request);
+    public ResponseEntity<ApiResponse<Void>> create(
+            @RequestBody @Valid CreateStudyRequest request,
+            @AuthenticationPrincipal UserPrincipal userPrincipal
+    ) {
+        studyService.save(request, userPrincipal.getUserId());
         return ApiResponse.created();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> update(@PathVariable Long id, @RequestBody UpdateStudyRequest request) {
-        studyService.update(id, request);
+    public ResponseEntity<ApiResponse<Void>> update(
+            @PathVariable Long id,
+            @RequestBody @Valid UpdateStudyRequest request,
+            @AuthenticationPrincipal UserPrincipal userPrincipal
+    ) {
+        studyService.update(id, request, userPrincipal.getUserId());
         return ApiResponse.success();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
-        studyService.delete(id);
+    public ResponseEntity<ApiResponse<Void>> delete(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserPrincipal userPrincipal
+    ) {
+        studyService.delete(id, userPrincipal.getUserId());
         return ApiResponse.success();
     }
 }

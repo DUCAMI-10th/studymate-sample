@@ -13,11 +13,11 @@ public interface TodoService {
 
     TodoResponse findById(Long studyId, Long todoId);
 
-    Long save(Long studyId, CreateTodoRequest request);
+    Long save(Long studyId, CreateTodoRequest request, Long currentUserId);
 
-    void update(Long studyId, Long todoId, UpdateTodoRequest request);
+    void update(Long studyId, Long todoId, UpdateTodoRequest request, Long currentUserId);
 
-    void updateStatus(Long studyId, Long todoId, UpdateTodoStatusRequest request);
+    void updateStatus(Long studyId, Long todoId, UpdateTodoStatusRequest request, Long currentUserId);
 
-    void delete(Long studyId, Long todoId);
+    void delete(Long studyId, Long todoId, Long currentUserId);
 }

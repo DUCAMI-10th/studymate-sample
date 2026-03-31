@@ -3,6 +3,7 @@ package com.ducami.studymate.domain.todo.entity;
 import com.ducami.studymate.domain.study.entity.StudyEntity;
 import com.ducami.studymate.domain.todo.dto.request.CreateTodoRequest;
 import com.ducami.studymate.domain.todo.dto.request.UpdateTodoRequest;
+import com.ducami.studymate.domain.todo.exception.TodoForbiddenException;
 import com.ducami.studymate.domain.user.entity.UserEntity;
 import com.ducami.studymate.global.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -12,7 +13,8 @@ import lombok.*;
 @Setter
 @Builder
 @AllArgsConstructor
-@Entity(name = "tb_todoes")
+@Entity
+@Table(name = "tb_todos")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TodoEntity extends BaseEntity {
 
@@ -24,6 +26,10 @@ public class TodoEntity extends BaseEntity {
     @JoinColumn(name = "study_id", nullable = false)
     private StudyEntity study;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id", nullable = false)
+    private UserEntity author;
+
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
@@ -31,8 +37,9 @@ public class TodoEntity extends BaseEntity {
     @Column(nullable = false, length = 20)
     private TodoStatus status;
 
-    public TodoEntity(StudyEntity study, CreateTodoRequest request) {
+    public TodoEntity(StudyEntity study, UserEntity author, CreateTodoRequest request) {
         this.study = study;
+        this.author = author;
         this.content = request.content();
         this.status = TodoStatus.PENDING;
     }
@@ -43,5 +50,11 @@ public class TodoEntity extends BaseEntity {
 
     public void updateStatus(TodoStatus status) {
         this.status = status;
+    }
+
+    public void validateAuthor(Long authorId) {
+        if (!this.author.getId().equals(authorId)) {
+            throw new TodoForbiddenException();
+        }
     }
 }

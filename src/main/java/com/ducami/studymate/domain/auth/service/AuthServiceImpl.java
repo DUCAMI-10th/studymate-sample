@@ -1,15 +1,12 @@
 package com.ducami.studymate.domain.auth.service;
 
 import com.ducami.studymate.domain.auth.dto.request.LoginRequest;
-import com.ducami.studymate.domain.auth.dto.request.TokenRefreshRequest;
 import com.ducami.studymate.domain.auth.dto.response.TokenResponse;
 import com.ducami.studymate.domain.user.entity.UserEntity;
 import com.ducami.studymate.domain.user.exception.InvalidCredentialsException;
-import com.ducami.studymate.domain.user.exception.InvalidRefreshTokenException;
 import com.ducami.studymate.domain.user.repository.UserRepository;
 import com.ducami.studymate.global.security.jwt.JwtProvider;
 import com.ducami.studymate.global.security.jwt.JwtToken;
-import com.ducami.studymate.global.security.jwt.enums.TokenType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,26 +30,11 @@ public class AuthServiceImpl implements AuthService {
             throw new InvalidCredentialsException();
         }
 
-        return issueTokens(user);
+        return issueToken(user);
     }
 
-    @Override
-    @Transactional
-    public TokenResponse refresh(TokenRefreshRequest request) {
-        String refreshToken = request.refreshToken();
-
-        if (!jwtProvider.validateToken(refreshToken) || !jwtProvider.isTokenType(refreshToken, TokenType.REFRESH)) {
-            throw new InvalidRefreshTokenException();
-        }
-
-        UserEntity user = userRepository.findByEmail(jwtProvider.getEmail(refreshToken))
-                .orElseThrow(InvalidRefreshTokenException::new);
-
-        return issueTokens(user);
-    }
-
-    private TokenResponse issueTokens(UserEntity user) {
-        JwtToken jwtToken = jwtProvider.generateTokens(user);
+    private TokenResponse issueToken(UserEntity user) {
+        JwtToken jwtToken = jwtProvider.generateToken(user);
         return TokenResponse.from(jwtToken);
     }
 }

@@ -7,6 +7,9 @@ import com.ducami.studymate.domain.study.dto.request.UpdateStudyRequest;
 import com.ducami.studymate.domain.study.entity.StudyEntity;
 import com.ducami.studymate.domain.study.exception.StudyNotFoundException;
 import com.ducami.studymate.domain.study.repository.StudyRepository;
+import com.ducami.studymate.domain.user.entity.UserEntity;
+import com.ducami.studymate.domain.user.repository.UserRepository;
+import com.ducami.studymate.global.exception.AuthenticatedUserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +21,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class StudyServiceImpl implements StudyService {
     private final StudyRepository studyRepository;
+    private final UserRepository userRepository;
 
     @Override
     public StudyResponse findById(Long id) {
@@ -33,20 +37,24 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     @Transactional
-    public void update(Long id, UpdateStudyRequest request) {
-        getStudy(id).update(request);
+    public void update(Long id, UpdateStudyRequest request, Long currentUserId) {
+        StudyEntity study = getStudy(id);
+        study.validateOwner(currentUserId);
+        study.update(request);
     }
 
     @Override
     @Transactional
-    public void delete(Long id) {
-        studyRepository.delete(getStudy(id));
+    public void delete(Long id, Long currentUserId) {
+        StudyEntity study = getStudy(id);
+        study.validateOwner(currentUserId);
+        studyRepository.delete(study);
     }
 
     @Override
     @Transactional
-    public Long save(CreateStudyRequest request) {
-        StudyEntity entity = new StudyEntity(request);
+    public Long save(CreateStudyRequest request, Long currentUserId) {
+        StudyEntity entity = new StudyEntity(request, getCurrentUser(currentUserId));
         return studyRepository.save(entity).getId();
     }
 
@@ -54,4 +62,10 @@ public class StudyServiceImpl implements StudyService {
         return studyRepository.findById(id)
                 .orElseThrow(StudyNotFoundException::new);
     }
+
+    private UserEntity getCurrentUser(Long currentUserId) {
+        return userRepository.findById(currentUserId)
+                .orElseThrow(AuthenticatedUserNotFoundException::new);
+    }
+
 }

@@ -13,9 +13,9 @@ public interface StudyService {
 
     List<StudySummaryResponse> findAll();
 
-    void update(Long id, UpdateStudyRequest request);
+    void update(Long id, UpdateStudyRequest request, Long currentUserId);
 
-    void delete(Long id);
+    void delete(Long id, Long currentUserId);
 
-    Long save(CreateStudyRequest request);
+    Long save(CreateStudyRequest request, Long currentUserId);
 }

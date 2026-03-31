@@ -4,7 +4,6 @@ import com.ducami.studymate.domain.user.entity.UserEntity;
 import com.ducami.studymate.global.security.jwt.config.JwtProperties;
 import com.ducami.studymate.global.exception.ExpiredTokenException;
 import com.ducami.studymate.global.exception.InvalidTokenException;
-import com.ducami.studymate.global.security.jwt.enums.TokenType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -27,18 +26,11 @@ public class JwtProvider {
         this.key = Keys.hmacShaKeyFor(jwtProperties.secret().getBytes(StandardCharsets.UTF_8));
     }
 
-    public JwtToken generateTokens(UserEntity user) {
+    public JwtToken generateToken(UserEntity user) {
         long now = System.currentTimeMillis();
         long accessTokenExpiresAt = now + jwtProperties.accessTokenExpiration();
-        long refreshTokenExpiresAt = now + jwtProperties.refreshTokenExpiration();
 
-        String accessToken = generateAccessToken(user, accessTokenExpiresAt);
-        String refreshToken = generateRefreshToken(user.getEmail(), refreshTokenExpiresAt);
-
-        return new JwtToken(
-                accessToken,
-                refreshToken
-        );
+        return new JwtToken(generateAccessToken(user, accessTokenExpiresAt));
     }
 
     public boolean validateToken(String token) {
@@ -50,13 +42,8 @@ public class JwtProvider {
         }
     }
 
-    public boolean isTokenType(String token, TokenType tokenType) {
-        String actualTokenType = getClaims(token).get("token_type", String.class);
-        return tokenType.matches(actualTokenType);
-    }
-
-    public String getEmail(String token) {
-        return getClaims(token).getSubject();
+    public Long getUserId(String token) {
+        return Long.parseLong(getClaims(token).getSubject());
     }
 
     public Claims getClaims(String token) {
@@ -81,24 +68,9 @@ public class JwtProvider {
 
         return Jwts.builder()
                 .issuer(jwtProperties.issuer())
-                .subject(user.getEmail())
-                .claim("token_type", TokenType.ACCESS.name())
+                .subject(String.valueOf(user.getId()))
                 .claim("authority", user.getRole().name())
-                .claim("userId", user.getId())
-                .issuedAt(now)
-                .expiration(expiration)
-                .signWith(key)
-                .compact();
-    }
-
-    private String generateRefreshToken(String email, long expiresAt) {
-        Date now = new Date();
-        Date expiration = new Date(expiresAt);
-
-        return Jwts.builder()
-                .issuer(jwtProperties.issuer())
-                .subject(email)
-                .claim("token_type", TokenType.REFRESH.name())
+                .claim("email", user.getEmail())
                 .issuedAt(now)
                 .expiration(expiration)
                 .signWith(key)

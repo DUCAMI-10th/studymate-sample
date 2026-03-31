@@ -10,7 +10,6 @@ spring:
         format_sql: true
         show-sql: false
     open-in-view: false
-    defer-datasource-initialization: false
 
   datasource:
     url: ${DB_URL:jdbc:mysql://localhost:3306/studymate}
@@ -22,4 +21,3 @@ jwt:
   issuer: studymate
   secret: ${JWT_SECRET:studymate-jwt-secret-key-that-is-long-enough-for-hs256}
   access-token-expiration: 1800000
-  refresh-token-expiration: 1209600000

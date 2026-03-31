@@ -106,48 +106,7 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status", is(200)))
                 .andExpect(jsonPath("$.message", is("로그인에 성공했습니다.")))
-                .andExpect(jsonPath("$.data.accessToken").isNotEmpty())
-                .andExpect(jsonPath("$.data.refreshToken").isNotEmpty());
-    }
-
-    @Test
-    @DisplayName("리프레시 토큰으로 토큰을 재발급한다")
-    void refresh() throws Exception {
-        userRepository.save(UserEntity.builder()
-                .name("tester")
-                .email("tester@example.com")
-                .password(passwordEncoder.encode("password123"))
-                .role(UserRole.USER)
-                .build());
-
-        MvcResult loginResult = mockMvc.perform(post("/api/v1/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                  "email": "tester@example.com",
-                                  "password": "password123"
-                                }
-                                """))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String refreshToken = loginResult.getResponse()
-                .getContentAsString()
-                .split("\"refreshToken\":\"")[1]
-                .split("\"")[0];
-
-        mockMvc.perform(post("/api/v1/auth/refresh")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                  "refreshToken": "%s"
-                                }
-                                """.formatted(refreshToken)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status", is(200)))
-                .andExpect(jsonPath("$.message", is("토큰을 재발급했습니다.")))
-                .andExpect(jsonPath("$.data.accessToken").isNotEmpty())
-                .andExpect(jsonPath("$.data.refreshToken").isNotEmpty());
+                .andExpect(jsonPath("$.data.accessToken").isNotEmpty());
     }
 
     @Test
