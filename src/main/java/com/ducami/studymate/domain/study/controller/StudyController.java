@@ -30,12 +30,12 @@ public class StudyController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<StudySummaryResponse>>> findAll() {
-        return ApiResponse.success(studyService.findAll());
+        return ApiResponse.ok(studyService.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<StudyResponse>> findById(@PathVariable Long id) {
-        return ApiResponse.success(studyService.findById(id));
+        return ApiResponse.ok(studyService.findById(id));
     }
 
     @PostMapping
@@ -54,7 +54,7 @@ public class StudyController {
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
         studyService.update(id, request, userPrincipal.getUserId());
-        return ApiResponse.success();
+        return ApiResponse.ok();
     }
 
     @DeleteMapping("/{id}")
@@ -63,6 +63,6 @@ public class StudyController {
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
         studyService.delete(id, userPrincipal.getUserId());
-        return ApiResponse.success();
+        return ApiResponse.ok();
     }
 }
