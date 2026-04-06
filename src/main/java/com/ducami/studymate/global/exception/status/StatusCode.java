@@ -1,8 +1,8 @@
-package com.ducami.studymate.global.exception;
+package com.ducami.studymate.global.exception.status;
 
 import org.springframework.http.HttpStatus;
 
-public interface ErrorCode {
+public interface StatusCode {
     HttpStatus getHttpStatus();
     String getCode();
     String getMessage();

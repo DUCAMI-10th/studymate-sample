@@ -1,9 +1,8 @@
 package com.ducami.studymate.global.exception;
 
-import com.ducami.studymate.global.exception.BusinessException;
-import com.ducami.studymate.global.exception.GlobalStatusCode;
+import com.ducami.studymate.global.exception.status.GlobalStatusCode;
 
-public class InvalidTokenException extends BusinessException {
+public class InvalidTokenException extends ApplicationException {
     public InvalidTokenException() {
         super(GlobalStatusCode.UNAUTHORIZED, "유효하지 않은 토큰입니다.");
     }

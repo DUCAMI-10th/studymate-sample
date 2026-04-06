@@ -20,6 +20,6 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<SignupResponse>> signup(@RequestBody @Valid SignupRequest request) {
-        return ApiResponse.created(userService.signup(request), "회원가입에 성공했습니다.");
+        return ApiResponse.created(userService.signup(request));
     }
 }

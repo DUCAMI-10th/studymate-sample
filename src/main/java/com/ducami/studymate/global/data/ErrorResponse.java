@@ -1,56 +1,38 @@
 package com.ducami.studymate.global.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.ducami.studymate.global.exception.ErrorCode;
+import com.ducami.studymate.global.exception.status.StatusCode;
+import lombok.Builder;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 
+@Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record ErrorResponse(
         String code,
-        int status,
+        @JsonIgnore int status,
         String message,
         LocalDateTime timestamp,
         Map<String, String> details
 ) {
-    public static ErrorResponse of(ErrorCode errorCode) {
-        return new ErrorResponse(
-                errorCode.getCode(),
-                errorCode.getHttpStatus().value(),
-                errorCode.getMessage(),
-                LocalDateTime.now(),
-                null
-        );
+    public static ErrorResponse of(int status, String code, String message) {
+        return ErrorResponse.builder()
+                .status(status)
+                .code(code)
+                .message(message)
+                .timestamp(LocalDateTime.now())
+                .build();
     }
 
-    public static ErrorResponse of(ErrorCode errorCode, String message) {
-        return new ErrorResponse(
-                errorCode.getCode(),
-                errorCode.getHttpStatus().value(),
-                message,
-                LocalDateTime.now(),
-                null
-        );
-    }
-
-    public static ErrorResponse of(ErrorCode errorCode, Map<String, String> details) {
-        return new ErrorResponse(
-                errorCode.getCode(),
-                errorCode.getHttpStatus().value(),
-                errorCode.getMessage(),
-                LocalDateTime.now(),
-                details
-        );
-    }
-
-    public static ErrorResponse of(ErrorCode errorCode, String message, Map<String, String> details) {
-        return new ErrorResponse(
-                errorCode.getCode(),
-                errorCode.getHttpStatus().value(),
-                message,
-                LocalDateTime.now(),
-                details
-        );
+    public static ErrorResponse of(int status, String code, String message, Map<String, String> details) {
+        return ErrorResponse.builder()
+                .status(status)
+                .code(code)
+                .message(message)
+                .timestamp(LocalDateTime.now())
+                .details(details)
+                .build();
     }
 }

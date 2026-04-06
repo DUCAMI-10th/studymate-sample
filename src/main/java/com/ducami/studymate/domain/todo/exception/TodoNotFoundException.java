@@ -1,8 +1,8 @@
 package com.ducami.studymate.domain.todo.exception;
 
-import com.ducami.studymate.global.exception.BusinessException;
+import com.ducami.studymate.global.exception.ApplicationException;
 
-public class TodoNotFoundException extends BusinessException {
+public class TodoNotFoundException extends ApplicationException {
     public TodoNotFoundException() {
         super(TodoStatusCode.TODO_NOT_FOUND);
     }

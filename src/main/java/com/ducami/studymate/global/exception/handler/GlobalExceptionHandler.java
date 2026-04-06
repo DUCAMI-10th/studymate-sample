@@ -1,7 +1,9 @@
-package com.ducami.studymate.global.exception;
+package com.ducami.studymate.global.exception.handler;
 
 import com.ducami.studymate.global.data.ApiResponse;
 import com.ducami.studymate.global.data.ErrorResponse;
+import com.ducami.studymate.global.exception.ApplicationException;
+import com.ducami.studymate.global.exception.status.GlobalStatusCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -16,9 +18,12 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<ApiResponse<ErrorResponse>> handleBusinessException(BusinessException e) {
-        return ApiResponse.error(e.getErrorCode(), e.getMessage());
+    @ExceptionHandler(ApplicationException.class)
+    public ResponseEntity<ApiResponse<ErrorResponse>> handleApplicationException(ApplicationException e) {
+        return ApiResponse.error(
+                e.getStatusCode().getHttpStatus().value(),
+                e.getStatusCode().getCode(),
+                e.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -30,7 +35,8 @@ public class GlobalExceptionHandler {
         }
 
         return ApiResponse.error(
-                GlobalStatusCode.INVALID_INPUT_VALUE,
+                GlobalStatusCode.INVALID_INPUT_VALUE.getHttpStatus().value(),
+                GlobalStatusCode.INVALID_INPUT_VALUE.getCode(),
                 GlobalStatusCode.INVALID_INPUT_VALUE.getMessage(),
                 details
         );
@@ -39,6 +45,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<ErrorResponse>> handleException(Exception e) {
         log.error(e.getMessage(), e);
-        return ApiResponse.error(GlobalStatusCode.INTERNAL_SERVER_ERROR);
+        return ApiResponse.error(
+                GlobalStatusCode.INTERNAL_SERVER_ERROR.getHttpStatus().value(),
+                GlobalStatusCode.INTERNAL_SERVER_ERROR.getCode(),
+                GlobalStatusCode.INTERNAL_SERVER_ERROR.getMessage()
+        );
     }
 }

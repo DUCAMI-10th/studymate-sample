@@ -1,4 +1,4 @@
-package com.ducami.studymate.global.exception;
+package com.ducami.studymate.global.exception.status;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum GlobalStatusCode implements ErrorCode {
+public enum GlobalStatusCode implements StatusCode {
     INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "GLOBAL_400", "잘못된 요청입니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "GLOBAL_401", "인증이 필요합니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "GLOBAL_403", "접근 권한이 없습니다."),
