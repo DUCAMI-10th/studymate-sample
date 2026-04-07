@@ -1,4 +1,4 @@
-package com.ducami.studymate.domain.todo.entity;
+package com.ducami.studymate.domain.todo.enums;
 
 public enum TodoStatus {
     PENDING,

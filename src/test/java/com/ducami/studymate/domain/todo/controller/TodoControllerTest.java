@@ -3,7 +3,7 @@ package com.ducami.studymate.domain.todo.controller;
 import com.ducami.studymate.domain.study.entity.StudyEntity;
 import com.ducami.studymate.domain.study.repository.StudyRepository;
 import com.ducami.studymate.domain.todo.entity.TodoEntity;
-import com.ducami.studymate.domain.todo.entity.TodoStatus;
+import com.ducami.studymate.domain.todo.enums.TodoStatus;
 import com.ducami.studymate.domain.todo.repository.TodoRepository;
 import com.ducami.studymate.domain.user.entity.UserEntity;
 import com.ducami.studymate.domain.user.enums.UserRole;

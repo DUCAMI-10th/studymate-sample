@@ -3,6 +3,7 @@ package com.ducami.studymate.domain.todo.entity;
 import com.ducami.studymate.domain.study.entity.StudyEntity;
 import com.ducami.studymate.domain.todo.dto.request.CreateTodoRequest;
 import com.ducami.studymate.domain.todo.dto.request.UpdateTodoRequest;
+import com.ducami.studymate.domain.todo.enums.TodoStatus;
 import com.ducami.studymate.domain.todo.exception.TodoForbiddenException;
 import com.ducami.studymate.domain.user.entity.UserEntity;
 import com.ducami.studymate.global.entity.BaseEntity;

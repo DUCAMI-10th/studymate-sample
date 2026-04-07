@@ -1,6 +1,6 @@
 package com.ducami.studymate.domain.todo.dto.request;
 
-import com.ducami.studymate.domain.todo.entity.TodoStatus;
+import com.ducami.studymate.domain.todo.enums.TodoStatus;
 import jakarta.validation.constraints.NotNull;
 
 public record UpdateTodoStatusRequest(

@@ -1,7 +1,7 @@
 package com.ducami.studymate.domain.todo.dto.response;
 
 import com.ducami.studymate.domain.todo.entity.TodoEntity;
-import com.ducami.studymate.domain.todo.entity.TodoStatus;
+import com.ducami.studymate.domain.todo.enums.TodoStatus;
 
 public record TodoResponse(
         Long id,
