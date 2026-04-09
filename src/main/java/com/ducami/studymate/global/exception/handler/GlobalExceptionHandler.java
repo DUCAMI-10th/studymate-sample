@@ -20,10 +20,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ApplicationException.class)
     public ResponseEntity<ApiResponse<ErrorResponse>> handleApplicationException(ApplicationException e) {
-        return ApiResponse.error(
-                e.getStatusCode().getHttpStatus().value(),
-                e.getStatusCode().getCode(),
-                e.getMessage());
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .code(e.getStatusCode().getCode())
+                .message(e.getMessage())
+                .timestamp(java.time.LocalDateTime.now())
+                .build();
+
+        return ApiResponse.error(e.getStatusCode(), errorResponse);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -34,21 +37,12 @@ public class GlobalExceptionHandler {
             details.put(fieldError.getField(), fieldError.getDefaultMessage());
         }
 
-        return ApiResponse.error(
-                GlobalStatusCode.INVALID_INPUT_VALUE.getHttpStatus().value(),
-                GlobalStatusCode.INVALID_INPUT_VALUE.getCode(),
-                GlobalStatusCode.INVALID_INPUT_VALUE.getMessage(),
-                details
-        );
+        return ApiResponse.error(GlobalStatusCode.INVALID_INPUT_VALUE, details);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<ErrorResponse>> handleException(Exception e) {
         log.error(e.getMessage(), e);
-        return ApiResponse.error(
-                GlobalStatusCode.INTERNAL_SERVER_ERROR.getHttpStatus().value(),
-                GlobalStatusCode.INTERNAL_SERVER_ERROR.getCode(),
-                GlobalStatusCode.INTERNAL_SERVER_ERROR.getMessage()
-        );
+        return ApiResponse.error(GlobalStatusCode.INTERNAL_SERVER_ERROR);
     }
 }

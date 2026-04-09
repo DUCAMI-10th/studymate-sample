@@ -15,7 +15,7 @@ spring:
     url: ${DB_URL:jdbc:mysql://localhost:3306/studymate}
     username: ${DB_USERNAME:mates}
     password: ${DB_PASSWORD:Mates123!@#}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: ${DB_DRIVER_CLASS_NAME:com.mysql.cj.jdbc.Driver}
 
 jwt:
   issuer: studymate

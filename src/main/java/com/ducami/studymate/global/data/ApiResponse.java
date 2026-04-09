@@ -9,51 +9,62 @@ import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record ApiResponse<T>(
-        boolean success,
-        T data,
-        ErrorResponse error
+        int status,
+        String message,
+        T data
 ) {
-    public ApiResponse(T data) {
-        this(true, data, null);
+    public static ResponseEntity<ApiResponse<Void>> ok() {
+        return ok("요청에 성공했습니다.");
     }
 
-    public ApiResponse(ErrorResponse error) {
-        this(false, null, error);
-    }
-
-    public static <T> ResponseEntity<ApiResponse<T>> ok() {
-        return ResponseEntity.ok(new ApiResponse<>(null));
+    public static ResponseEntity<ApiResponse<Void>> ok(String message) {
+        return of(HttpStatus.OK, message, null);
     }
 
     public static <T> ResponseEntity<ApiResponse<T>> ok(T data) {
-        return ResponseEntity.ok(new ApiResponse<>(data));
+        return ok("요청에 성공했습니다.", data);
     }
 
-    public static <T> ResponseEntity<ApiResponse<T>> created() {
-        return ResponseEntity.status(201)
-                .body(new ApiResponse<>(null));
+    public static <T> ResponseEntity<ApiResponse<T>> ok(String message, T data) {
+        return of(HttpStatus.OK, message, data);
+    }
+
+    public static ResponseEntity<ApiResponse<Void>> created() {
+        return created("생성에 성공했습니다.");
+    }
+
+    public static ResponseEntity<ApiResponse<Void>> created(String message) {
+        return of(HttpStatus.CREATED, message, null);
     }
 
     public static <T> ResponseEntity<ApiResponse<T>> created(T data) {
-        return ResponseEntity.status(201)
-                .body(new ApiResponse<>(data));
+        return created("생성에 성공했습니다.", data);
     }
 
-    public static <T> ResponseEntity<ApiResponse<T>> of(int status, T data) {
+    public static <T> ResponseEntity<ApiResponse<T>> created(String message, T data) {
+        return of(HttpStatus.CREATED, message, data);
+    }
+
+    public static ResponseEntity<ApiResponse<ErrorResponse>> error(StatusCode statusCode) {
+        return error(statusCode, ErrorResponse.from(statusCode));
+    }
+
+    public static ResponseEntity<ApiResponse<ErrorResponse>> error(
+            StatusCode statusCode,
+            Map<String, String> details
+    ) {
+        return error(statusCode, ErrorResponse.from(statusCode, details));
+    }
+
+    public static ResponseEntity<ApiResponse<ErrorResponse>> error(
+            StatusCode statusCode,
+            ErrorResponse errorResponse
+    ) {
+        return of(statusCode.getHttpStatus(), statusCode.getMessage(), errorResponse);
+    }
+
+    private static <T> ResponseEntity<ApiResponse<T>> of(HttpStatus status, String message, T data) {
         return ResponseEntity.status(status)
-                .body(new ApiResponse<>(data));
-    }
-
-    public static <T> ResponseEntity<ApiResponse<T>> error(ErrorResponse error) {
-        return ResponseEntity.status(error.status())
-                .body(new ApiResponse<>(error));
-    }
-
-    public static <T> ResponseEntity<ApiResponse<T>> error(int status, String code, String message) {
-        return error(ErrorResponse.of(status, code, message));
-    }
-
-    public static <T> ResponseEntity<ApiResponse<T>> error(int status, String code, String message, Map<String, String> details) {
-        return error(ErrorResponse.of(status, code, message, details));
+                .body(new ApiResponse<>(status.value(), message, data));
     }
 }

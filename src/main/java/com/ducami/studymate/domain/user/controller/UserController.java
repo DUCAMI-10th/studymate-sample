@@ -22,11 +22,11 @@ public class UserController {
     public ResponseEntity<ApiResponse<UserResponse>> getInfo(
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
-        return ApiResponse.ok(userService.getUser(userPrincipal.getUserId()));
+        return ApiResponse.ok("내 정보를 조회했습니다.", userService.getUser(userPrincipal.getUserId()));
     }
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<SignupResponse>> signup(@RequestBody @Valid SignupRequest request) {
-        return ApiResponse.created(userService.signup(request));
+        return ApiResponse.created("회원가입에 성공했습니다.", userService.signup(request));
     }
 }

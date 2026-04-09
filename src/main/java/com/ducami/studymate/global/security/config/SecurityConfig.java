@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // 회원가입과 로그인은 토큰이 없어도 접근 가능해야 한다.
                         .requestMatchers(
                                 "/error",
                                 "/api/v1/users/signup",
@@ -51,6 +52,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html"
                         ).permitAll()
+                        // 조회 API는 먼저 열어 두고, 생성/수정/삭제에서 JWT 인증을 학습한다.
                         .requestMatchers(HttpMethod.GET, "/api/v1/studies/**").permitAll()
                         .anyRequest().authenticated()
                 )

@@ -8,10 +8,13 @@ import com.ducami.studymate.domain.todo.exception.TodoForbiddenException;
 import com.ducami.studymate.domain.user.entity.UserEntity;
 import com.ducami.studymate.global.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @Entity

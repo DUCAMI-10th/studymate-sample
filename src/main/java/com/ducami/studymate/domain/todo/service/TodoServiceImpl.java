@@ -29,7 +29,7 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public List<TodoResponse> findAll(Long studyId) {
-        getStudy(studyId);
+        findStudyOrThrow(studyId);
 
         return todoRepository.findAllByStudyIdOrderByIdAsc(studyId).stream()
                 .map(TodoResponse::from)
@@ -38,14 +38,14 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public TodoResponse findById(Long studyId, Long todoId) {
-        return TodoResponse.from(getTodo(studyId, todoId));
+        return TodoResponse.from(findTodoOrThrow(studyId, todoId));
     }
 
     @Override
     @Transactional
     public Long save(Long studyId, CreateTodoRequest request, Long currentUserId) {
-        StudyEntity study = getStudy(studyId);
-        UserEntity author = getCurrentUser(currentUserId);
+        StudyEntity study = findStudyOrThrow(studyId);
+        UserEntity author = findCurrentUserOrThrow(currentUserId);
         return todoRepository.save(
                 new TodoEntity(study, author, request)
         ).getId();
@@ -54,7 +54,7 @@ public class TodoServiceImpl implements TodoService {
     @Override
     @Transactional
     public void update(Long studyId, Long todoId, UpdateTodoRequest request, Long currentUserId) {
-        TodoEntity todo = getTodo(studyId, todoId);
+        TodoEntity todo = findTodoOrThrow(studyId, todoId);
         todo.validateAuthor(currentUserId);
         todo.update(request);
     }
@@ -62,7 +62,7 @@ public class TodoServiceImpl implements TodoService {
     @Override
     @Transactional
     public void updateStatus(Long studyId, Long todoId, UpdateTodoStatusRequest request, Long currentUserId) {
-        TodoEntity todo = getTodo(studyId, todoId);
+        TodoEntity todo = findTodoOrThrow(studyId, todoId);
         todo.validateAuthor(currentUserId);
         todo.updateStatus(request.status());
     }
@@ -70,24 +70,24 @@ public class TodoServiceImpl implements TodoService {
     @Override
     @Transactional
     public void delete(Long studyId, Long todoId, Long currentUserId) {
-        TodoEntity todo = getTodo(studyId, todoId);
+        TodoEntity todo = findTodoOrThrow(studyId, todoId);
         todo.validateAuthor(currentUserId);
         todoRepository.delete(todo);
     }
 
-    private StudyEntity getStudy(Long studyId) {
+    private StudyEntity findStudyOrThrow(Long studyId) {
         return studyRepository.findById(studyId)
                 .orElseThrow(StudyNotFoundException::new);
     }
 
-    private TodoEntity getTodo(Long studyId, Long todoId) {
-        getStudy(studyId);
+    private TodoEntity findTodoOrThrow(Long studyId, Long todoId) {
+        findStudyOrThrow(studyId);
 
         return todoRepository.findByIdAndStudyId(todoId, studyId)
                 .orElseThrow(TodoNotFoundException::new);
     }
 
-    private UserEntity getCurrentUser(Long currentUserId) {
+    private UserEntity findCurrentUserOrThrow(Long currentUserId) {
         return userRepository.findById(currentUserId)
                 .orElseThrow(AuthenticatedUserNotFoundException::new);
     }

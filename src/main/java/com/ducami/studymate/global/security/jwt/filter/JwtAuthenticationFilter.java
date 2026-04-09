@@ -30,9 +30,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-
         String token = extractToken(request);
 
+        // Authorization 헤더에서 토큰을 꺼내고, 유효하면 인증 정보를 저장한다.
         if (token != null && jwtProvider.validateToken(token)) {
             userRepository.findById(jwtProvider.getUserId(token))
                     .ifPresent(this::setAuthentication);

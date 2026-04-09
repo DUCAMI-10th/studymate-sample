@@ -7,13 +7,16 @@ import com.ducami.studymate.domain.todo.entity.TodoEntity;
 import com.ducami.studymate.domain.user.entity.UserEntity;
 import com.ducami.studymate.global.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @Entity
@@ -43,7 +46,7 @@ public class StudyEntity extends BaseEntity {
         this.content = request.content();
         this.owner = owner;
     }
-    
+
     public void update(UpdateStudyRequest request) {
         if (request.title() != null) this.title = request.title();
         if (request.content() != null) this.content = request.content();

@@ -1,6 +1,5 @@
 package com.ducami.studymate.global.data;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ducami.studymate.global.exception.status.StatusCode;
 import lombok.Builder;
@@ -12,25 +11,22 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record ErrorResponse(
         String code,
-        @JsonIgnore int status,
         String message,
         LocalDateTime timestamp,
         Map<String, String> details
 ) {
-    public static ErrorResponse of(int status, String code, String message) {
+    public static ErrorResponse from(StatusCode statusCode) {
         return ErrorResponse.builder()
-                .status(status)
-                .code(code)
-                .message(message)
+                .code(statusCode.getCode())
+                .message(statusCode.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();
     }
 
-    public static ErrorResponse of(int status, String code, String message, Map<String, String> details) {
+    public static ErrorResponse from(StatusCode statusCode, Map<String, String> details) {
         return ErrorResponse.builder()
-                .status(status)
-                .code(code)
-                .message(message)
+                .code(statusCode.getCode())
+                .message(statusCode.getMessage())
                 .timestamp(LocalDateTime.now())
                 .details(details)
                 .build();

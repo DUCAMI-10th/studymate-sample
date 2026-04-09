@@ -23,7 +23,7 @@ public class TodoController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<TodoResponse>>> findAll(@PathVariable Long studyId) {
-        return ApiResponse.ok(todoService.findAll(studyId));
+        return ApiResponse.ok("Todo 목록을 조회했습니다.", todoService.findAll(studyId));
     }
 
     @GetMapping("/{todoId}")
@@ -31,7 +31,7 @@ public class TodoController {
             @PathVariable Long studyId,
             @PathVariable Long todoId
     ) {
-        return ApiResponse.ok(todoService.findById(studyId, todoId));
+        return ApiResponse.ok("Todo 상세 정보를 조회했습니다.", todoService.findById(studyId, todoId));
     }
 
     @PostMapping
@@ -41,7 +41,7 @@ public class TodoController {
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
         todoService.save(studyId, request, userPrincipal.getUserId());
-        return ApiResponse.created();
+        return ApiResponse.created("Todo를 등록했습니다.");
     }
 
     @PutMapping("/{todoId}")
@@ -52,7 +52,7 @@ public class TodoController {
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
         todoService.update(studyId, todoId, request, userPrincipal.getUserId());
-        return ApiResponse.ok();
+        return ApiResponse.ok("Todo를 수정했습니다.");
     }
 
     @PatchMapping("/{todoId}/status")
@@ -63,7 +63,7 @@ public class TodoController {
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
         todoService.updateStatus(studyId, todoId, request, userPrincipal.getUserId());
-        return ApiResponse.ok();
+        return ApiResponse.ok("Todo 상태를 변경했습니다.");
     }
 
     @DeleteMapping("/{todoId}")
@@ -73,6 +73,6 @@ public class TodoController {
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
         todoService.delete(studyId, todoId, userPrincipal.getUserId());
-        return ApiResponse.ok();
+        return ApiResponse.ok("Todo를 삭제했습니다.");
     }
 }

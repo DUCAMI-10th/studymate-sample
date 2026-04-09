@@ -20,6 +20,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<TokenResponse>> login(@RequestBody @Valid LoginRequest request) {
-        return ApiResponse.ok(authService.login(request));
+        return ApiResponse.ok("로그인에 성공했습니다.", authService.login(request));
     }
 }

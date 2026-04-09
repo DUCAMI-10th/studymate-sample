@@ -25,20 +25,20 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     public StudyResponse findById(Long id) {
-        return StudyResponse.toEntity(getStudy(id));
+        return StudyResponse.from(findStudyOrThrow(id));
     }
 
     @Override
     public List<StudySummaryResponse> findAll() {
         return studyRepository.findAll().stream()
-                .map(StudySummaryResponse::toEntity)
+                .map(StudySummaryResponse::from)
                 .toList();
     }
 
     @Override
     @Transactional
     public void update(Long id, UpdateStudyRequest request, Long currentUserId) {
-        StudyEntity study = getStudy(id);
+        StudyEntity study = findStudyOrThrow(id);
         study.validateOwner(currentUserId);
         study.update(request);
     }
@@ -46,7 +46,7 @@ public class StudyServiceImpl implements StudyService {
     @Override
     @Transactional
     public void delete(Long id, Long currentUserId) {
-        StudyEntity study = getStudy(id);
+        StudyEntity study = findStudyOrThrow(id);
         study.validateOwner(currentUserId);
         studyRepository.delete(study);
     }
@@ -54,16 +54,17 @@ public class StudyServiceImpl implements StudyService {
     @Override
     @Transactional
     public Long save(CreateStudyRequest request, Long currentUserId) {
-        StudyEntity entity = new StudyEntity(request, getCurrentUser(currentUserId));
+        UserEntity currentUser = findCurrentUserOrThrow(currentUserId);
+        StudyEntity entity = new StudyEntity(request, currentUser);
         return studyRepository.save(entity).getId();
     }
 
-    private StudyEntity getStudy(Long id) {
+    private StudyEntity findStudyOrThrow(Long id) {
         return studyRepository.findById(id)
                 .orElseThrow(StudyNotFoundException::new);
     }
 
-    private UserEntity getCurrentUser(Long currentUserId) {
+    private UserEntity findCurrentUserOrThrow(Long currentUserId) {
         return userRepository.findById(currentUserId)
                 .orElseThrow(AuthenticatedUserNotFoundException::new);
     }

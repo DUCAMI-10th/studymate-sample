@@ -27,16 +27,18 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
             HttpServletResponse response,
             AuthenticationException authException
     ) throws IOException, ServletException {
-        response.setStatus(GlobalStatusCode.UNAUTHORIZED.getHttpStatus().value());
+        GlobalStatusCode statusCode = GlobalStatusCode.UNAUTHORIZED;
+
+        response.setStatus(statusCode.getHttpStatus().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
-        ErrorResponse error = ErrorResponse.of(
-                GlobalStatusCode.UNAUTHORIZED.getHttpStatus().value(),
-                GlobalStatusCode.UNAUTHORIZED.getCode(),
-                GlobalStatusCode.UNAUTHORIZED.getMessage()
+        ErrorResponse error = ErrorResponse.from(statusCode);
+        ApiResponse<ErrorResponse> body = new ApiResponse<>(
+                statusCode.getHttpStatus().value(),
+                statusCode.getMessage(),
+                error
         );
-        ApiResponse<ErrorResponse> body = new ApiResponse<>(error);
         objectMapper.writeValue(response.getWriter(), body);
     }
 }

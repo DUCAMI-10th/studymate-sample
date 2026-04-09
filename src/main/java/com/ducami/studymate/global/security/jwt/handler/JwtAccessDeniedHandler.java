@@ -27,16 +27,18 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
             HttpServletResponse response,
             AccessDeniedException accessDeniedException
     ) throws IOException, ServletException {
-        response.setStatus(GlobalStatusCode.FORBIDDEN.getHttpStatus().value());
+        GlobalStatusCode statusCode = GlobalStatusCode.FORBIDDEN;
+
+        response.setStatus(statusCode.getHttpStatus().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
-        ErrorResponse error = ErrorResponse.of(
-                GlobalStatusCode.FORBIDDEN.getHttpStatus().value(),
-                GlobalStatusCode.FORBIDDEN.getCode(),
-                GlobalStatusCode.FORBIDDEN.getMessage()
+        ErrorResponse error = ErrorResponse.from(statusCode);
+        ApiResponse<ErrorResponse> body = new ApiResponse<>(
+                statusCode.getHttpStatus().value(),
+                statusCode.getMessage(),
+                error
         );
-        ApiResponse<ErrorResponse> body = new ApiResponse<>(error);
         objectMapper.writeValue(response.getWriter(), body);
     }
 }

@@ -30,12 +30,12 @@ public class StudyController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<StudySummaryResponse>>> findAll() {
-        return ApiResponse.ok(studyService.findAll());
+        return ApiResponse.ok("스터디 목록을 조회했습니다.", studyService.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<StudyResponse>> findById(@PathVariable Long id) {
-        return ApiResponse.ok(studyService.findById(id));
+        return ApiResponse.ok("스터디 상세 정보를 조회했습니다.", studyService.findById(id));
     }
 
     @PostMapping
@@ -44,7 +44,7 @@ public class StudyController {
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
         studyService.save(request, userPrincipal.getUserId());
-        return ApiResponse.created();
+        return ApiResponse.created("스터디를 등록했습니다.");
     }
 
     @PutMapping("/{id}")
@@ -54,7 +54,7 @@ public class StudyController {
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
         studyService.update(id, request, userPrincipal.getUserId());
-        return ApiResponse.ok();
+        return ApiResponse.ok("스터디를 수정했습니다.");
     }
 
     @DeleteMapping("/{id}")
@@ -63,6 +63,6 @@ public class StudyController {
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
         studyService.delete(id, userPrincipal.getUserId());
-        return ApiResponse.ok();
+        return ApiResponse.ok("스터디를 삭제했습니다.");
     }
 }

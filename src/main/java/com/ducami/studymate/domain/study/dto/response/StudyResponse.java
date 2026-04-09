@@ -7,7 +7,7 @@ public record StudyResponse(
         String title,
         String content
 ) {
-    public static StudyResponse toEntity(StudyEntity entity) {
+    public static StudyResponse from(StudyEntity entity) {
         return new StudyResponse(
                 entity.getId(),
                 entity.getTitle(),
