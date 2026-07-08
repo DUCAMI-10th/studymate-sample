@@ -38,16 +38,8 @@ public record ApiResponse<T>(
         return response(HttpStatus.CREATED, data, null);
     }
 
-    public static ResponseEntity<ApiResponse<Void>> created() {
-        return response(HttpStatus.CREATED, null, null);
-    }
-
     public static <T> ResponseEntity<ApiResponse<T>> created(T data, String message) {
         return response(HttpStatus.CREATED, data, message);
-    }
-
-    public static ResponseEntity<ApiResponse<Void>> created(String message) {
-        return response(HttpStatus.CREATED, null, message);
     }
 
     public static ResponseEntity<ApiResponse<ErrorResponse>> error(ErrorCode errorCode) {
