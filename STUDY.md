@@ -22,7 +22,7 @@
 ## 지금 코드에서 볼 파일
 
 - `src/main/java/com/ducami/studymate/domain/todo/controller/TodoController.java`
-- `src/main/java/com/ducami/studymate/domain/todo/service/TodoServiceImpl.java`
+- `src/main/java/com/ducami/studymate/domain/todo/service/TodoService.java`
 - `src/main/java/com/ducami/studymate/domain/todo/entity/TodoEntity.java`
 - `src/main/java/com/ducami/studymate/domain/todo/repository/TodoRepository.java`
 - `src/test/java/com/ducami/studymate/domain/todo/controller/TodoControllerTest.java`

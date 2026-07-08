@@ -33,12 +33,12 @@ public class TodoController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> create(
+    public ResponseEntity<ApiResponse<Long>> create(
             @PathVariable Long studyId,
             @RequestBody @Valid CreateTodoRequest request
     ) {
-        todoService.save(studyId, request);
-        return ApiResponse.created("Todo를 등록했습니다.");
+        Long todoId = todoService.save(studyId, request);
+        return ApiResponse.created(todoId, "Todo를 등록했습니다.");
     }
 
     @PutMapping("/{todoId}")

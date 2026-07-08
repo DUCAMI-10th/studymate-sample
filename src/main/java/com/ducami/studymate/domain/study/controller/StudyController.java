@@ -37,9 +37,9 @@ public class StudyController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> create(@RequestBody @Valid CreateStudyRequest request) {
-        studyService.save(request);
-        return ApiResponse.created();
+    public ResponseEntity<ApiResponse<Long>> create(@RequestBody @Valid CreateStudyRequest request) {
+        Long studyId = studyService.save(request);
+        return ApiResponse.created(studyId);
     }
 
     @PutMapping("/{id}")

@@ -51,7 +51,8 @@ class TodoControllerTest {
                                 """))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.status", is(201)))
-                .andExpect(jsonPath("$.message", is("Todo를 등록했습니다.")));
+                .andExpect(jsonPath("$.message", is("Todo를 등록했습니다.")))
+                .andExpect(jsonPath("$.data").isNumber());
 
         mockMvc.perform(get("/api/v1/studies/{studyId}/todos", study.getId()))
                 .andExpect(status().isOk())
