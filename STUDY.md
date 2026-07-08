@@ -23,7 +23,7 @@
 
 - `src/main/java/com/ducami/studymate/domain/study/controller/StudyController.java`
 - `src/main/java/com/ducami/studymate/domain/study/service/StudyService.java`
-- `src/main/java/com/ducami/studymate/domain/study/service/StudyServiceImpl.java`
+- `src/main/java/com/ducami/studymate/domain/study/service/StudyService.java`
 - `src/main/java/com/ducami/studymate/domain/study/entity/StudyEntity.java`
 - `src/main/java/com/ducami/studymate/domain/study/repository/StudyRepository.java`
 - `src/main/java/com/ducami/studymate/domain/study/dto/request/CreateStudyRequest.java`
