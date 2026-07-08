@@ -6,7 +6,7 @@
 
 1. `src/main/java/com/ducami/studymate/StudymateApplication.java`
 2. `src/main/java/com/ducami/studymate/domain/study/controller/StudyController.java`
-3. `src/main/java/com/ducami/studymate/domain/study/service/StudyServiceImpl.java`
+3. `src/main/java/com/ducami/studymate/domain/study/service/StudyService.java`
 4. `src/main/java/com/ducami/studymate/domain/study/entity/StudyEntity.java`
 5. `src/main/java/com/ducami/studymate/domain/todo/controller/TodoController.java`
 6. `src/main/java/com/ducami/studymate/global/exception/handler/GlobalExceptionHandler.java`
