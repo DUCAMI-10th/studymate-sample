@@ -51,6 +51,8 @@ public class GlobalExceptionHandler {
 
 이 구조 덕분에 각 Controller에서 try-catch를 반복하지 않아도 됩니다.
 
+`@ExceptionHandler(ApplicationException.class)`는 `ApplicationException` 종류의 예외가 발생했을 때 실행할 메서드를 뜻합니다. Service에서 예외를 던지면 Controller가 직접 잡지 않아도 Spring이 이 Handler로 연결합니다.
+
 ## 응답 모양 통일
 
 조회 성공 응답은 다음 형태로 통일합니다.
@@ -83,14 +85,21 @@ public ResponseEntity<ApiResponse<List<StudySummaryResponse>>> findAll() {
 2. Service를 호출합니다.
 3. 응답 메시지를 정해서 반환합니다.
 
+`ApiResponse<T>`의 `T`는 data 자리에 들어갈 타입입니다. 목록 조회라면 `T`는 `List<StudySummaryResponse>`이고, 에러라면 `T`는 `ErrorResponse`입니다. 같은 응답 껍데기를 쓰되 안에 들어가는 데이터 타입만 바뀐다고 보면 됩니다.
+
 ## 예외 처리 흐름
 
 존재하지 않는 Study를 조회하면 Service에서 `StudyNotFoundException`을 던집니다.
 
 ```java
-return studyRepository.findById(id)
-        .map(StudyResponse::toEntity)
-        .orElseThrow(StudyNotFoundException::new);
+Optional<StudyEntity> studyOptional = studyRepository.findById(id);
+
+if (studyOptional.isEmpty()) {
+    throw new StudyNotFoundException();
+}
+
+StudyEntity study = studyOptional.get();
+return StudyResponse.from(study);
 ```
 
 이 예외는 `ApplicationException`을 상속합니다.
@@ -154,8 +163,13 @@ StudyService
 
 ```java
 private StudyEntity findStudyOrThrow(Long studyId) {
-    return studyRepository.findById(studyId)
-            .orElseThrow(StudyNotFoundException::new);
+    Optional<StudyEntity> studyOptional = studyRepository.findById(studyId);
+
+    if (studyOptional.isEmpty()) {
+        throw new StudyNotFoundException();
+    }
+
+    return studyOptional.get();
 }
 ```
 

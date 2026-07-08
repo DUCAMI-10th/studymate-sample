@@ -52,6 +52,8 @@ public PasswordEncoder passwordEncoder() {
 
 이렇게 등록하면 회원가입 Service와 로그인 Service가 같은 방식으로 비밀번호를 암호화하고 비교할 수 있습니다.
 
+`BCryptPasswordEncoder`는 같은 비밀번호라도 저장할 때마다 다른 암호화 문자열을 만들 수 있습니다. 그래서 로그인할 때는 저장된 값을 다시 평문으로 되돌리지 않고 `matches(입력값, 저장된값)`으로 비교합니다.
+
 ## 회원가입 흐름
 
 ```text
@@ -90,16 +92,18 @@ DB에는 암호화된 문자열이 저장됩니다. 로그인할 때도 원본 �
 
 ```java
 public static UserEntity signup(SignupRequest request, String encodedPassword) {
-    return UserEntity.builder()
-            .name(request.getName())
-            .email(request.getEmail())
-            .password(encodedPassword)
-            .role(UserRole.USER)
-            .build();
+    return new UserEntity(
+            request.getName(),
+            request.getEmail(),
+            encodedPassword,
+            UserRole.USER
+    );
 }
 ```
 
 이 메서드는 단순 wrapper가 아닙니다. 회원가입 시 기본 권한이 `USER`라는 규칙을 한 곳에 모읍니다. 이런 경우에는 정적 생성 메서드를 사용해도 좋습니다.
+
+여기서는 Builder를 쓰지 않습니다. 필드가 많지 않고 기본 권한을 넣는 규칙만 보여 주면 되기 때문에 생성자 호출이 더 직접적입니다.
 
 반대로 특별한 규칙이 없는 Entity까지 모두 `create()` 메서드로 감쌀 필요는 없습니다.
 
@@ -131,6 +135,8 @@ throw new InvalidCredentialsException();
 ```
 
 이렇게 처리하면 “이메일이 틀렸는지, 비밀번호가 틀렸는지”를 응답으로 구분하지 않습니다.
+
+Service 코드에서는 먼저 이메일로 사용자를 찾고, 없으면 예외를 던집니다. 사용자가 있으면 그 다음에 비밀번호를 비교합니다. 이 순서를 나누어 읽으면 로그인 흐름이 단순해집니다.
 
 ## 이번 챕터에서 제외할 내용
 

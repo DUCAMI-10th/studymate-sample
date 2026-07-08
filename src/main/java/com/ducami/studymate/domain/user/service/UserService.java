@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
     @Transactional
     public SignupResponse signup(SignupRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -23,6 +24,6 @@ public class UserService {
         }
 
         UserEntity user = UserEntity.signup(request, passwordEncoder.encode(request.getPassword()));
-        return SignupResponse.toEntity(userRepository.save(user));
+        return SignupResponse.from(userRepository.save(user));
     }
 }

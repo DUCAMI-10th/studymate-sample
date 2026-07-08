@@ -4,14 +4,10 @@ import com.ducami.studymate.domain.user.dto.request.SignupRequest;
 import com.ducami.studymate.domain.user.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
-@AllArgsConstructor
 @Entity(name = "tb_users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserEntity {
@@ -32,12 +28,19 @@ public class UserEntity {
     @Column(nullable = false, length = 20)
     private UserRole role;
 
+    public UserEntity(String name, String email, String password, UserRole role) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
+
     public static UserEntity signup(SignupRequest request, String encodedPassword) {
-        return UserEntity.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .password(encodedPassword)
-                .role(UserRole.USER)
-                .build();
+        return new UserEntity(
+                request.getName(),
+                request.getEmail(),
+                encodedPassword,
+                UserRole.USER
+        );
     }
 }

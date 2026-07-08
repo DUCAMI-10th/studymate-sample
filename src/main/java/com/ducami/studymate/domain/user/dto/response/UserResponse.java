@@ -13,7 +13,7 @@ public class UserResponse {
     private String email;
     private UserRole role;
 
-    public static UserResponse toEntity(UserEntity user) {
+    public static UserResponse from(UserEntity user) {
         return new UserResponse(
                 user.getId(),
                 user.getName(),

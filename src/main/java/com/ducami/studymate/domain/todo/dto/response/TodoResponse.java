@@ -12,7 +12,7 @@ public class TodoResponse {
     private String content;
     private TodoStatus status;
 
-    public static TodoResponse toEntity(TodoEntity entity) {
+    public static TodoResponse from(TodoEntity entity) {
         return new TodoResponse(
                 entity.getId(),
                 entity.getContent(),
