@@ -18,7 +18,7 @@ src/main/java/com/ducami/studymate/domain/study/
 ├── dto/StudySummaryResponse.java
 ├── entity/StudyEntity.java
 ├── repository/StudyRepository.java
-└── service/StudyServiceImpl.java
+└── service/StudyService.java
 ```
 
 처음에는 파일을 모두 자세히 읽지 않아도 됩니다. 요청이 들어왔을 때 어떤 순서로 이동하는지만 먼저 확인합니다.
@@ -30,7 +30,7 @@ Bean은 Spring이 만들고 관리하는 객체입니다.
 다음 클래스들은 직접 `new`로 생성하지 않아도 Spring이 실행 중에 객체로 만들어 둡니다.
 
 - `StudyController`
-- `StudyServiceImpl`
+- `StudyService`
 - `StudyRepository`
 
 예를 들어 `StudyController`에는 `@RestController`가 붙어 있습니다.
@@ -59,10 +59,10 @@ private final StudyService studyService;
 하지만 Controller 안에서 다음처럼 작성하지 않습니다.
 
 ```java
-private final StudyService studyService = new StudyServiceImpl(...);
+private final StudyService studyService = new StudyService(...);
 ```
 
-Service를 직접 만들면 Controller가 Service 생성 방법까지 알아야 합니다. 지금 구조에서는 Spring이 `StudyServiceImpl` Bean을 찾아 Controller에 넣어 줍니다.
+Service를 직접 만들면 Controller가 Service 생성 방법까지 알아야 합니다. 지금 구조에서는 Spring이 `StudyService` Bean을 찾아 Controller에 넣어 줍니다.
 
 이 덕분에 Controller는 다음 역할에 집중할 수 있습니다.
 
@@ -76,7 +76,7 @@ Service를 직접 만들면 Controller가 Service 생성 방법까지 알아야 
 클라이언트
 -> GET /api/v1/studies
 -> StudyController.findAll()
--> StudyServiceImpl.findAll()
+-> StudyService.findAll()
 -> studyRepository.findAll()
 -> List<StudyEntity>
 -> List<StudySummaryResponse>
@@ -117,7 +117,7 @@ public List<StudySummaryResponse> findAll() {
 클라이언트
 -> GET /api/v1/studies/1
 -> StudyController.findById(1)
--> StudyServiceImpl.findById(1)
+-> StudyService.findById(1)
 -> studyRepository.findById(1)
 -> StudyEntity
 -> StudyResponse
@@ -154,7 +154,7 @@ Controller에서 Repository를 바로 호출할 수도 있습니다. 하지만 �
 1. 서버를 실행합니다.
 2. `GET /api/v1/studies`를 호출합니다.
 3. `StudyController.findAll()`에 중단점을 걸거나 코드를 따라 읽습니다.
-4. `StudyServiceImpl.findAll()`에서 Repository 호출을 확인합니다.
+4. `StudyService.findAll()`에서 Repository 호출을 확인합니다.
 5. `StudySummaryResponse`로 변환되는 지점을 확인합니다.
 6. `GET /api/v1/studies/{id}`도 같은 방식으로 따라갑니다.
 
