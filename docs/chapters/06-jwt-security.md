@@ -24,7 +24,7 @@ src/main/java/com/ducami/studymate/global/security/
 src/main/java/com/ducami/studymate/domain/auth/
 ├── controller/AuthController.java
 ├── dto/response/TokenResponse.java
-└── service/AuthServiceImpl.java
+└── service/AuthService.java
 ```
 
 작성자 검증은 Study와 Todo Entity에서도 확인합니다.
@@ -52,7 +52,7 @@ private final JwtAuthenticationFilter jwtAuthenticationFilter;
 클라이언트
 -> POST /api/v1/auth/login
 -> AuthController.login()
--> AuthServiceImpl.login()
+-> AuthService.login()
 -> 이메일/비밀번호 검증
 -> JwtProvider.generateToken(user)
 -> TokenResponse
