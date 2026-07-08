@@ -7,7 +7,7 @@
 - `GET /api/v1/studies`: 스터디 목록 조회
 - `GET /api/v1/studies/{id}`: 스터디 상세 조회
 
-이 브랜치에는 기본 생성, 수정, 삭제 코드도 포함되어 있습니다. 하지만 첫 수업에서는 조회 흐름만 먼저 다룹니다. 조회 흐름을 이해하면 이후 생성, 수정, 삭제 코드도 같은 구조 안에서 읽을 수 있습니다.
+이 브랜치에는 조회 코드만 둡니다. 생성, 수정, 삭제 코드는 다음 챕터에서 추가합니다. 첫 단계에서는 요청이 Controller, Service, Repository를 어떤 순서로 지나가는지에 집중합니다.
 
 ## 먼저 확인할 파일
 
@@ -70,6 +70,22 @@ Service를 직접 만들면 Controller가 Service 생성 방법까지 알아야 
 - 어떤 Service 메서드를 호출할지 정합니다.
 - 어떤 HTTP 응답을 돌려줄지 정합니다.
 
+## Repository와 JpaRepository 설명
+
+`StudyRepository`는 DB에 접근하는 Bean입니다.
+
+```java
+public interface StudyRepository extends JpaRepository<StudyEntity, Long> {
+}
+```
+
+`JpaRepository<StudyEntity, Long>`은 다음처럼 읽습니다.
+
+- `StudyEntity`: 이 Repository가 다룰 Entity입니다.
+- `Long`: `StudyEntity`의 id 타입입니다.
+
+`findAll()`, `findById(id)`, `save(entity)`, `deleteById(id)` 같은 기본 메서드는 직접 만들지 않아도 `JpaRepository`가 제공합니다. 그래서 이번 챕터에서는 SQL을 직접 작성하지 않고 Repository 메서드 호출부터 따라갑니다.
+
 ## 목록 조회 흐름
 
 ```text
@@ -101,13 +117,29 @@ Service 메서드는 Repository를 사용합니다.
 
 ```java
 public List<StudySummaryResponse> findAll() {
-    return studyRepository.findAll().stream()
-            .map(StudySummaryResponse::toEntity)
-            .toList();
+    List<StudyEntity> studies = studyRepository.findAll();
+    List<StudySummaryResponse> responses = new ArrayList<>();
+
+    for (StudyEntity study : studies) {
+        StudySummaryResponse response = StudySummaryResponse.from(study);
+        responses.add(response);
+    }
+
+    return responses;
 }
 ```
 
 `studyRepository.findAll()`은 DB에 저장된 Study 전체를 조회합니다. 조회 결과는 `StudyEntity` 목록입니다. API 응답에는 Entity를 그대로 내보내지 않고 `StudySummaryResponse`로 바꿔서 돌려줍니다.
+
+여기서는 일부러 `stream()`, `map(...)`, `StudySummaryResponse::from`을 사용하지 않습니다. 이 문법들은 코드를 짧게 만들 수 있지만, 처음 Spring 흐름을 읽는 단계에서는 `for`문이 더 따라가기 쉽습니다.
+
+위 코드는 다음 순서로 읽습니다.
+
+1. DB에서 `StudyEntity` 목록을 가져옵니다.
+2. 응답을 담을 빈 목록을 만듭니다.
+3. `for`문으로 Study를 하나씩 꺼냅니다.
+4. Entity 하나를 Response DTO 하나로 바꿉니다.
+5. 바꾼 Response DTO를 응답 목록에 추가합니다.
 
 ## 상세 조회 흐름
 
@@ -134,6 +166,21 @@ public ResponseEntity<StudyResponse> findById(@PathVariable Long id) {
 ```
 
 `/api/v1/studies/1`로 요청하면 `id`에는 `1`이 들어갑니다.
+
+Service에서는 `findById(id)` 결과를 바로 꺼내지 않습니다. 해당 id의 Study가 없을 수도 있기 때문입니다.
+
+```java
+Optional<StudyEntity> studyOptional = studyRepository.findById(id);
+
+if (studyOptional.isEmpty()) {
+    throw new IllegalArgumentException("스터디가 존재하지 않습니다.");
+}
+
+StudyEntity study = studyOptional.get();
+return StudyResponse.from(study);
+```
+
+`Optional<StudyEntity>`는 “Study가 있을 수도 있고 없을 수도 있다”는 뜻으로 읽으면 됩니다. 값이 없으면 예외를 발생시키고, 값이 있으면 `get()`으로 꺼낸 뒤 Response DTO로 바꿉니다.
 
 ## 역할 분리 기준
 

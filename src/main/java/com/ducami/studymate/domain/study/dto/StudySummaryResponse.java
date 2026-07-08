@@ -10,7 +10,7 @@ public class StudySummaryResponse {
     private Long id;
     private String title;
 
-    public static StudySummaryResponse toEntity(StudyEntity entity) {
+    public static StudySummaryResponse from(StudyEntity entity) {
         return new StudySummaryResponse(
                 entity.getId(),
                 entity.getTitle()
