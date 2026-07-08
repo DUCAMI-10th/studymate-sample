@@ -15,9 +15,9 @@
 ## 지금 코드에서 볼 파일
 
 - `src/main/java/com/ducami/studymate/domain/user/controller/UserController.java`
-- `src/main/java/com/ducami/studymate/domain/user/service/UserServiceImpl.java`
+- `src/main/java/com/ducami/studymate/domain/user/service/UserService.java`
 - `src/main/java/com/ducami/studymate/domain/auth/controller/AuthController.java`
-- `src/main/java/com/ducami/studymate/domain/auth/service/AuthServiceImpl.java`
+- `src/main/java/com/ducami/studymate/domain/auth/service/AuthService.java`
 - `src/main/java/com/ducami/studymate/global/security/config/SecurityConfig.java`
 
 ## 읽을 때 주의할 점
