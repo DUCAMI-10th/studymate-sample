@@ -8,8 +8,6 @@ import com.ducami.studymate.domain.user.entity.UserEntity;
 import com.ducami.studymate.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,8 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Builder
-@AllArgsConstructor
 @Entity
 @Table(name = "tb_studies")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -37,9 +33,14 @@ public class StudyEntity extends BaseEntity {
     @JoinColumn(name = "owner_id", nullable = false)
     private UserEntity owner;
 
-    @Builder.Default
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TodoEntity> todos = new ArrayList<>();
+
+    public StudyEntity(String title, String content, UserEntity owner) {
+        this.title = title;
+        this.content = content;
+        this.owner = owner;
+    }
 
     public StudyEntity(CreateStudyRequest request, UserEntity owner) {
         this.title = request.title();

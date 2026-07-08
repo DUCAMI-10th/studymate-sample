@@ -9,14 +9,10 @@ import com.ducami.studymate.domain.user.entity.UserEntity;
 import com.ducami.studymate.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
-@AllArgsConstructor
 @Entity
 @Table(name = "tb_todos")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -40,6 +36,13 @@ public class TodoEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private TodoStatus status;
+
+    public TodoEntity(StudyEntity study, UserEntity author, String content, TodoStatus status) {
+        this.study = study;
+        this.author = author;
+        this.content = content;
+        this.status = status;
+    }
 
     public TodoEntity(StudyEntity study, UserEntity author, CreateTodoRequest request) {
         this.study = study;

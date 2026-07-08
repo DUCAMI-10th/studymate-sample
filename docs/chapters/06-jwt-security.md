@@ -46,6 +46,8 @@ private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
 이 필터도 직접 생성하지 않습니다. Spring이 Bean으로 관리하고, `SecurityConfig`에서 필터 체인에 추가합니다.
 
+`Filter`는 Controller보다 먼저 실행되는 코드입니다. 그래서 인증처럼 모든 API 앞에서 공통으로 확인해야 하는 작업에 사용합니다.
+
 ## 로그인 후 토큰 발급 흐름
 
 ```text
@@ -72,6 +74,8 @@ private final JwtAuthenticationFilter jwtAuthenticationFilter;
 ```
 
 JWT 안에는 사용자 id, email, role 같은 정보가 들어갑니다. 서버는 다음 요청에서 이 토큰을 읽어 현재 사용자를 다시 확인합니다.
+
+이 프로젝트의 JWT는 “로그인한 사용자를 다시 찾기 위한 문자열”로 이해하면 충분합니다. 로그인 성공 시 서버가 만들고, 이후 요청에서는 클라이언트가 헤더에 붙여 보냅니다. 서버는 토큰을 검증한 뒤 토큰 안의 userId로 사용자를 조회합니다.
 
 ## 인증 요청 흐름
 
@@ -121,6 +125,32 @@ Controller에서는 다음처럼 현재 사용자를 받을 수 있습니다.
 - 회원가입과 로그인은 토큰 없이 접근할 수 있습니다.
 - Study 조회는 토큰 없이 접근할 수 있습니다.
 - 생성, 수정, 삭제는 인증이 필요합니다.
+
+Spring Security 설정에는 람다 문법이 나옵니다.
+
+```java
+.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+.authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+```
+
+`session -> ...`, `auth -> ...`는 “Spring이 넘겨준 설정 객체를 받아서 오른쪽 코드를 실행한다”는 뜻입니다. 처음에는 람다 문법을 외우기보다, `session`은 세션 설정이고 `auth`는 요청 권한 설정이라고 읽으면 됩니다.
+
+```java
+.csrf(AbstractHttpConfigurer::disable)
+```
+
+`AbstractHttpConfigurer::disable`은 메서드 참조입니다. `csrf 설정을 disable 메서드로 끈다`고 읽으면 됩니다. Security 설정에서 자주 나오는 표준 문법이라 코드에는 유지합니다.
+
+## record DTO 읽는 법
+
+이번 챕터의 요청/응답 DTO에는 `record`가 나옵니다.
+
+```java
+public record TokenResponse(String accessToken) {
+}
+```
+
+이 코드는 `accessToken` 값을 담는 DTO입니다. 일반 class로 쓰면 필드, 생성자, getter를 직접 작성해야 하지만, record는 그 코드를 Java가 대신 만들어 줍니다. 값을 꺼낼 때는 `getAccessToken()`이 아니라 `accessToken()`처럼 필드 이름과 같은 메서드를 사용합니다.
 
 수업에서는 다음 요청을 직접 비교해 보는 것이 좋습니다.
 

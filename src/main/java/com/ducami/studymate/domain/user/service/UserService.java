@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -31,9 +33,12 @@ public class UserService {
 
     @Transactional
     public UserResponse getUser(Long userId) {
-        return UserResponse.from(
-                userRepository.findById(userId)
-                    .orElseThrow(UserNotFoundException::new)
-        );
+        Optional<UserEntity> userOptional = userRepository.findById(userId);
+
+        if (userOptional.isEmpty()) {
+            throw new UserNotFoundException();
+        }
+
+        return UserResponse.from(userOptional.get());
     }
 }

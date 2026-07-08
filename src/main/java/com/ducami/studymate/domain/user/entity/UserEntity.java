@@ -12,14 +12,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
-@AllArgsConstructor
 @Entity
 @Table(name = "tb_users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -41,12 +37,19 @@ public class UserEntity extends BaseEntity {
     @Column(nullable = false, length = 20)
     private UserRole role;
 
+    public UserEntity(String name, String email, String password, UserRole role) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
+
     public static UserEntity signup(SignupRequest request, String encodedPassword) {
-        return UserEntity.builder()
-                .name(request.name())
-                .email(request.email())
-                .password(encodedPassword)
-                .role(UserRole.USER)
-                .build();
+        return new UserEntity(
+                request.name(),
+                request.email(),
+                encodedPassword,
+                UserRole.USER
+        );
     }
 }
