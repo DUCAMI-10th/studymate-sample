@@ -21,16 +21,16 @@ src/main/java/com/ducami/studymate/domain/todo/
 ├── entity/TodoEntity.java
 ├── enums/TodoStatus.java
 ├── repository/TodoRepository.java
-└── service/TodoServiceImpl.java
+└── service/TodoService.java
 ```
 
 Study 쪽에서는 `StudyEntity`도 함께 봅니다. Todo가 Study와 연결되기 때문입니다.
 
 ## Bean과 DI 복습
 
-`TodoController`, `TodoServiceImpl`, `TodoRepository`, `StudyRepository`는 Spring Bean입니다.
+`TodoController`, `TodoService`, `TodoRepository`, `StudyRepository`는 Spring Bean입니다.
 
-`TodoServiceImpl`은 두 Repository를 주입받습니다.
+`TodoService`은 두 Repository를 주입받습니다.
 
 ```java
 private final TodoRepository todoRepository;
@@ -73,7 +73,7 @@ public ResponseEntity<Void> create(
 클라이언트
 -> POST /api/v1/studies/{studyId}/todos
 -> TodoController.create()
--> TodoServiceImpl.save()
+-> TodoService.save()
 -> studyRepository.findById(studyId)
 -> new TodoEntity(study, request)
 -> todoRepository.save(todo)
@@ -131,7 +131,7 @@ public enum TodoStatus {
 ```text
 PATCH /api/v1/studies/{studyId}/todos/{todoId}/status
 -> TodoController.updateStatus()
--> TodoServiceImpl.updateStatus()
+-> TodoService.updateStatus()
 -> findTodoOrThrow(studyId, todoId)
 -> todo.updateStatus(request.getStatus())
 ```
