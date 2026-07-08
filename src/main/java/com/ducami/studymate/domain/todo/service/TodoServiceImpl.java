@@ -7,7 +7,9 @@ import com.ducami.studymate.domain.todo.dto.request.UpdateTodoRequest;
 import com.ducami.studymate.domain.todo.dto.request.UpdateTodoStatusRequest;
 import com.ducami.studymate.domain.todo.dto.response.TodoResponse;
 import com.ducami.studymate.domain.todo.entity.TodoEntity;
+import com.ducami.studymate.domain.todo.exception.TodoNotFoundException;
 import com.ducami.studymate.domain.todo.repository.TodoRepository;
+import com.ducami.studymate.domain.study.exception.StudyNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,13 +67,13 @@ public class TodoServiceImpl implements TodoService {
 
     private StudyEntity findStudyOrThrow(Long studyId) {
         return studyRepository.findById(studyId)
-                .orElseThrow(() -> new IllegalArgumentException("스터디가 존재하지 않습니다."));
+                .orElseThrow(StudyNotFoundException::new);
     }
 
     private TodoEntity findTodoOrThrow(Long studyId, Long todoId) {
         findStudyOrThrow(studyId);
 
         return todoRepository.findByIdAndStudyId(todoId, studyId)
-                .orElseThrow(() -> new IllegalArgumentException("Todo가 존재하지 않습니다."));
+                .orElseThrow(TodoNotFoundException::new);
     }
 }

@@ -5,6 +5,7 @@ import com.ducami.studymate.domain.study.dto.response.StudyResponse;
 import com.ducami.studymate.domain.study.dto.response.StudySummaryResponse;
 import com.ducami.studymate.domain.study.dto.request.UpdateStudyRequest;
 import com.ducami.studymate.domain.study.entity.StudyEntity;
+import com.ducami.studymate.domain.study.exception.StudyNotFoundException;
 import com.ducami.studymate.domain.study.repository.StudyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class StudyServiceImpl implements StudyService {
     public StudyResponse findById(Long id) {
         return studyRepository.findById(id)
             .map(StudyResponse::toEntity)
-            .orElseThrow(() -> new IllegalArgumentException("스터디가 존재하지 않습니다."));
+            .orElseThrow(StudyNotFoundException::new);
     }
 
     @Override
@@ -36,7 +37,7 @@ public class StudyServiceImpl implements StudyService {
     @Transactional
     public void update(Long id, UpdateStudyRequest request) {
         StudyEntity study = studyRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("스터디가 존재하지 않습니다."));
+            .orElseThrow(StudyNotFoundException::new);
 
         study.update(request);
     }

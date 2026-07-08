@@ -5,6 +5,7 @@ import com.ducami.studymate.domain.todo.dto.request.UpdateTodoRequest;
 import com.ducami.studymate.domain.todo.dto.request.UpdateTodoStatusRequest;
 import com.ducami.studymate.domain.todo.dto.response.TodoResponse;
 import com.ducami.studymate.domain.todo.service.TodoService;
+import com.ducami.studymate.global.data.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,53 +20,53 @@ public class TodoController {
     private final TodoService todoService;
 
     @GetMapping
-    public ResponseEntity<List<TodoResponse>> findAll(@PathVariable Long studyId) {
-        return ResponseEntity.ok(todoService.findAll(studyId));
+    public ResponseEntity<ApiResponse<List<TodoResponse>>> findAll(@PathVariable Long studyId) {
+        return ApiResponse.ok("Todo 목록을 조회했습니다.", todoService.findAll(studyId));
     }
 
     @GetMapping("/{todoId}")
-    public ResponseEntity<TodoResponse> findById(
+    public ResponseEntity<ApiResponse<TodoResponse>> findById(
             @PathVariable Long studyId,
             @PathVariable Long todoId
     ) {
-        return ResponseEntity.ok(todoService.findById(studyId, todoId));
+        return ApiResponse.ok("Todo 상세 정보를 조회했습니다.", todoService.findById(studyId, todoId));
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(
+    public ResponseEntity<ApiResponse<Void>> create(
             @PathVariable Long studyId,
             @RequestBody @Valid CreateTodoRequest request
     ) {
         todoService.save(studyId, request);
-        return ResponseEntity.status(201).build();
+        return ApiResponse.created("Todo를 등록했습니다.");
     }
 
     @PutMapping("/{todoId}")
-    public ResponseEntity<Void> update(
+    public ResponseEntity<ApiResponse<Void>> update(
             @PathVariable Long studyId,
             @PathVariable Long todoId,
             @RequestBody @Valid UpdateTodoRequest request
     ) {
         todoService.update(studyId, todoId, request);
-        return ResponseEntity.noContent().build();
+        return ApiResponse.ok("Todo를 수정했습니다.");
     }
 
     @PatchMapping("/{todoId}/status")
-    public ResponseEntity<Void> updateStatus(
+    public ResponseEntity<ApiResponse<Void>> updateStatus(
             @PathVariable Long studyId,
             @PathVariable Long todoId,
             @RequestBody @Valid UpdateTodoStatusRequest request
     ) {
         todoService.updateStatus(studyId, todoId, request);
-        return ResponseEntity.noContent().build();
+        return ApiResponse.ok("Todo 상태를 변경했습니다.");
     }
 
     @DeleteMapping("/{todoId}")
-    public ResponseEntity<Void> delete(
+    public ResponseEntity<ApiResponse<Void>> delete(
             @PathVariable Long studyId,
             @PathVariable Long todoId
     ) {
         todoService.delete(studyId, todoId);
-        return ResponseEntity.noContent().build();
+        return ApiResponse.ok("Todo를 삭제했습니다.");
     }
 }

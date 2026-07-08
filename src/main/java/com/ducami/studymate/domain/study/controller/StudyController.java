@@ -5,6 +5,7 @@ import com.ducami.studymate.domain.study.dto.response.StudyResponse;
 import com.ducami.studymate.domain.study.dto.response.StudySummaryResponse;
 import com.ducami.studymate.domain.study.dto.request.UpdateStudyRequest;
 import com.ducami.studymate.domain.study.service.StudyService;
+import com.ducami.studymate.global.data.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,30 +27,30 @@ public class StudyController {
     private final StudyService studyService;
 
     @GetMapping
-    public ResponseEntity<List<StudySummaryResponse>> findAll() {
-        return ResponseEntity.ok(studyService.findAll());
+    public ResponseEntity<ApiResponse<List<StudySummaryResponse>>> findAll() {
+        return ApiResponse.ok("스터디 목록을 조회했습니다.", studyService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StudyResponse> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(studyService.findById(id));
+    public ResponseEntity<ApiResponse<StudyResponse>> findById(@PathVariable Long id) {
+        return ApiResponse.ok("스터디 상세 정보를 조회했습니다.", studyService.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody @Valid CreateStudyRequest request) {
+    public ResponseEntity<ApiResponse<Void>> create(@RequestBody @Valid CreateStudyRequest request) {
         studyService.save(request);
-        return ResponseEntity.status(201).build();
+        return ApiResponse.created("스터디를 등록했습니다.");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody UpdateStudyRequest request) {
+    public ResponseEntity<ApiResponse<Void>> update(@PathVariable Long id, @RequestBody UpdateStudyRequest request) {
         studyService.update(id, request);
-        return ResponseEntity.noContent().build();
+        return ApiResponse.ok("스터디를 수정했습니다.");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
         studyService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ApiResponse.ok("스터디를 삭제했습니다.");
     }
 }
