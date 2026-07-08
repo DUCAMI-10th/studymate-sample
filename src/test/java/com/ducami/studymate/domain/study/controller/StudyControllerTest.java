@@ -55,11 +55,37 @@ class StudyControllerTest {
                                   "content": "매주 월요일 진행"
                                 }
                                 """))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.data").isNumber());
 
         StudyEntity savedStudy = studyRepository.findAll().getFirst();
         assertEquals(owner.getId(), savedStudy.getOwner().getId());
         assertEquals("스프링 스터디", savedStudy.getTitle());
+    }
+
+    @Test
+    @DisplayName("스터디 내용만 수정할 수 있다")
+    void updateStudyContentOnly() throws Exception {
+        UserEntity owner = createUser("content-owner@example.com");
+        StudyEntity study = studyRepository.save(StudyEntity.builder()
+                .title("기존 제목")
+                .content("기존 내용")
+                .owner(owner)
+                .build());
+        String accessToken = login(owner.getEmail());
+
+        mockMvc.perform(put("/api/v1/studies/{id}", study.getId())
+                        .header("Authorization", "Bearer " + accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "content": "수정된 내용"
+                                }
+                                """))
+                .andExpect(status().isOk());
+
+        assertEquals("기존 제목", study.getTitle());
+        assertEquals("수정된 내용", study.getContent());
     }
 
     @Test
