@@ -6,14 +6,10 @@ import com.ducami.studymate.domain.todo.dto.request.UpdateTodoRequest;
 import com.ducami.studymate.domain.todo.enums.TodoStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
-@AllArgsConstructor
 @Entity(name = "tb_todos")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TodoEntity {

@@ -39,6 +39,17 @@ private final StudyRepository studyRepository;
 
 Todo를 만들 때는 Todo 저장소만 있으면 부족합니다. 먼저 Study가 실제로 존재하는지 확인해야 하므로 `StudyRepository`도 필요합니다.
 
+`TodoRepository`도 `JpaRepository<TodoEntity, Long>`을 상속합니다. 여기에 다음 메서드를 추가하면 Spring Data JPA가 이름을 보고 쿼리를 만듭니다.
+
+```java
+List<TodoEntity> findAllByStudyIdOrderByIdAsc(Long studyId);
+```
+
+이름은 길지만 다음처럼 나누어 읽으면 됩니다.
+
+- `findAllByStudyId`: studyId가 같은 Todo를 모두 찾습니다.
+- `OrderByIdAsc`: id 오름차순으로 정렬합니다.
+
 ## URL 구조
 
 Todo API는 다음처럼 Study 아래에 배치합니다.
@@ -84,7 +95,8 @@ public ResponseEntity<Void> create(
 
 ```java
 StudyEntity study = findStudyOrThrow(studyId);
-return todoRepository.save(new TodoEntity(study, request)).getId();
+TodoEntity todo = new TodoEntity(study, request);
+return todoRepository.save(todo).getId();
 ```
 
 존재하지 않는 Study에 Todo를 만들 수는 없습니다. 그래서 `studyId`로 Study를 먼저 찾습니다.
@@ -150,12 +162,19 @@ PATCH /api/v1/studies/{studyId}/todos/{todoId}/status
 
 ```java
 private StudyEntity findStudyOrThrow(Long studyId) {
-    return studyRepository.findById(studyId)
-            .orElseThrow(() -> new IllegalArgumentException("스터디가 존재하지 않습니다."));
+    Optional<StudyEntity> studyOptional = studyRepository.findById(studyId);
+
+    if (studyOptional.isEmpty()) {
+        throw new IllegalArgumentException("스터디가 존재하지 않습니다.");
+    }
+
+    return studyOptional.get();
 }
 ```
 
 이 helper는 허용됩니다. 이름만 봐도 “Study를 찾고, 없으면 예외를 던진다”는 의미가 드러납니다.
+
+`Optional<StudyEntity>`는 Study가 있을 수도 있고 없을 수도 있다는 뜻입니다. 처음에는 `orElseThrow(...)`처럼 짧은 문법보다 `if`로 비어 있는지 확인하는 코드가 흐름을 따라가기 쉽습니다.
 
 반대로 다음 이름은 피합니다.
 
