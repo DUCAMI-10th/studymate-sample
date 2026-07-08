@@ -19,14 +19,14 @@ src/main/java/com/ducami/studymate/domain/study/
 ├── dto/request/UpdateStudyRequest.java
 ├── entity/StudyEntity.java
 ├── repository/StudyRepository.java
-└── service/StudyServiceImpl.java
+└── service/StudyService.java
 ```
 
 파일을 읽을 때는 Controller부터 시작하는 편이 좋습니다. 실제 HTTP 요청이 Controller 메서드에 먼저 도착하기 때문입니다.
 
 ## Bean과 DI 복습
 
-`StudyController`, `StudyServiceImpl`, `StudyRepository`는 Spring이 관리하는 객체입니다. 이런 객체를 Bean이라고 부릅니다.
+`StudyController`, `StudyService`, `StudyRepository`는 Spring이 관리하는 객체입니다. 이런 객체를 Bean이라고 부릅니다.
 
 Controller 안에는 다음 필드가 있습니다.
 
@@ -34,7 +34,7 @@ Controller 안에는 다음 필드가 있습니다.
 private final StudyService studyService;
 ```
 
-이 필드에 들어갈 객체를 직접 `new StudyServiceImpl(...)`로 만들지 않습니다. Spring이 실행 중에 필요한 객체를 넣어 줍니다. 이 방식을 DI라고 합니다. DI를 사용하면 Controller는 HTTP 요청 처리에 집중하고, Service 생성 방식은 Spring에게 맡길 수 있습니다.
+이 필드에 들어갈 객체를 직접 `new StudyService(...)`로 만들지 않습니다. Spring이 실행 중에 필요한 객체를 넣어 줍니다. 이 방식을 DI라고 합니다. DI를 사용하면 Controller는 HTTP 요청 처리에 집중하고, Service 생성 방식은 Spring에게 맡길 수 있습니다.
 
 ## 생성 요청 흐름
 
@@ -45,7 +45,7 @@ private final StudyService studyService;
 -> POST /api/v1/studies
 -> StudyController.create()
 -> CreateStudyRequest
--> StudyServiceImpl.save()
+-> StudyService.save()
 -> new StudyEntity(request)
 -> studyRepository.save(entity)
 -> HTTP 201 Created
@@ -122,7 +122,7 @@ public ResponseEntity<Void> create(@RequestBody @Valid CreateStudyRequest reques
 클라이언트
 -> PUT /api/v1/studies/{id}
 -> StudyController.update()
--> StudyServiceImpl.update()
+-> StudyService.update()
 -> studyRepository.findById(id)
 -> study.update(request)
 -> 트랜잭션 종료 시점에 DB 반영
@@ -146,7 +146,7 @@ public void update(UpdateStudyRequest request) {
 ```text
 DELETE /api/v1/studies/{id}
 -> StudyController.delete()
--> StudyServiceImpl.delete()
+-> StudyService.delete()
 -> studyRepository.deleteById(id)
 ```
 
