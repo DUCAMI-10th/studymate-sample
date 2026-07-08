@@ -13,32 +13,16 @@ public record ApiResponse<T>(
         String message,
         T data
 ) {
-    public static ResponseEntity<ApiResponse<Void>> ok() {
-        return ok("요청에 성공했습니다.");
-    }
-
     public static ResponseEntity<ApiResponse<Void>> ok(String message) {
         return of(HttpStatus.OK, message, null);
-    }
-
-    public static <T> ResponseEntity<ApiResponse<T>> ok(T data) {
-        return ok("요청에 성공했습니다.", data);
     }
 
     public static <T> ResponseEntity<ApiResponse<T>> ok(String message, T data) {
         return of(HttpStatus.OK, message, data);
     }
 
-    public static ResponseEntity<ApiResponse<Void>> created() {
-        return created("생성에 성공했습니다.");
-    }
-
     public static ResponseEntity<ApiResponse<Void>> created(String message) {
         return of(HttpStatus.CREATED, message, null);
-    }
-
-    public static <T> ResponseEntity<ApiResponse<T>> created(T data) {
-        return created("생성에 성공했습니다.", data);
     }
 
     public static <T> ResponseEntity<ApiResponse<T>> created(String message, T data) {
