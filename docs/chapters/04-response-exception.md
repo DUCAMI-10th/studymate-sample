@@ -106,7 +106,7 @@ public class StudyNotFoundException extends ApplicationException {
 예외가 발생하면 다음 순서로 처리됩니다.
 
 ```text
-StudyServiceImpl
+StudyService
 -> StudyNotFoundException 발생
 -> GlobalExceptionHandler
 -> ApiResponse.error(...)

@@ -37,9 +37,9 @@ public class StudyController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> create(@RequestBody @Valid CreateStudyRequest request) {
-        studyService.save(request);
-        return ApiResponse.created("스터디를 등록했습니다.");
+    public ResponseEntity<ApiResponse<Long>> create(  CreateStudyRequest request) {
+        Long studyId = studyService.save(request);
+        return ApiResponse.created("스터디를 등록했습니다.", studyId);
     }
 
     @PutMapping("/{id}")

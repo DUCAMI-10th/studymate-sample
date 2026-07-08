@@ -4,18 +4,44 @@ import com.ducami.studymate.domain.study.dto.request.CreateStudyRequest;
 import com.ducami.studymate.domain.study.dto.response.StudyResponse;
 import com.ducami.studymate.domain.study.dto.response.StudySummaryResponse;
 import com.ducami.studymate.domain.study.dto.request.UpdateStudyRequest;
+import com.ducami.studymate.domain.study.entity.StudyEntity;
+import com.ducami.studymate.domain.study.exception.StudyNotFoundException;
+import com.ducami.studymate.domain.study.repository.StudyRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-public interface StudyService {
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class StudyService {
+    private final StudyRepository studyRepository;
+    public StudyResponse findById(Long id) {
+        return studyRepository.findById(id)
+            .map(StudyResponse::toEntity)
+            .orElseThrow(StudyNotFoundException::new);
+    }
+    public List<StudySummaryResponse> findAll() {
+        return studyRepository.findAll().stream()
+                .map(StudySummaryResponse::toEntity)
+                .toList();
+    }
+    @Transactional
+    public void update(Long id, UpdateStudyRequest request) {
+        StudyEntity study = studyRepository.findById(id)
+            .orElseThrow(StudyNotFoundException::new);
 
-    StudyResponse findById(Long id);
-
-    List<StudySummaryResponse> findAll();
-
-    void update(Long id, UpdateStudyRequest request);
-
-    void delete(Long id);
-
-    Long save(CreateStudyRequest request);
+        study.update(request);
+    }
+    @Transactional
+    public void delete(Long id) {
+        studyRepository.deleteById(id);
+    }
+    @Transactional
+    public Long save(CreateStudyRequest request) {
+        StudyEntity entity = new StudyEntity(request);
+        return studyRepository.save(entity).getId();
+    }
 }

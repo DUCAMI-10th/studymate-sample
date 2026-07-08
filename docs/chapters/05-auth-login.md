@@ -18,12 +18,12 @@ src/main/java/com/ducami/studymate/domain/user/
 ├── dto/response/SignupResponse.java
 ├── entity/UserEntity.java
 ├── repository/UserRepository.java
-└── service/UserServiceImpl.java
+└── service/UserService.java
 
 src/main/java/com/ducami/studymate/domain/auth/
 ├── controller/AuthController.java
 ├── dto/request/LoginRequest.java
-└── service/AuthServiceImpl.java
+└── service/AuthService.java
 ```
 
 비밀번호 암호화 설정은 다음 파일에서 확인합니다.
@@ -34,7 +34,7 @@ src/main/java/com/ducami/studymate/global/config/PasswordConfig.java
 
 ## Bean과 DI 설명
 
-`UserServiceImpl`은 `UserRepository`와 `PasswordEncoder`를 주입받습니다.
+`UserService`은 `UserRepository`와 `PasswordEncoder`를 주입받습니다.
 
 ```java
 private final UserRepository userRepository;
@@ -58,7 +58,7 @@ public PasswordEncoder passwordEncoder() {
 클라이언트
 -> POST /api/v1/users/signup
 -> UserController.signup()
--> UserServiceImpl.signup()
+-> UserService.signup()
 -> 이메일 중복 확인
 -> passwordEncoder.encode(...)
 -> UserEntity.signup(...)
@@ -109,7 +109,7 @@ public static UserEntity signup(SignupRequest request, String encodedPassword) {
 클라이언트
 -> POST /api/v1/auth/login
 -> AuthController.login()
--> AuthServiceImpl.login()
+-> AuthService.login()
 -> email로 User 조회
 -> passwordEncoder.matches(...)
 -> UserResponse 반환
