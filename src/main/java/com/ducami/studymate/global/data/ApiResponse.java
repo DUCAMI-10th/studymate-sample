@@ -37,8 +37,8 @@ public class ApiResponse<T> {
         return of(HttpStatus.OK, message, null);
     }
 
-    public static ResponseEntity<ApiResponse<Void>> created(String message) {
-        return of(HttpStatus.CREATED, message, null);
+    public static <T> ResponseEntity<ApiResponse<T>> created(String message, T data) {
+        return of(HttpStatus.CREATED, message, data);
     }
 
     public static ResponseEntity<ApiResponse<ErrorResponse>> error(StatusCode statusCode) {
