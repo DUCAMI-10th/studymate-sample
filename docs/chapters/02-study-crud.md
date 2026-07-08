@@ -36,6 +36,8 @@ private final StudyService studyService;
 
 이 필드에 들어갈 객체를 직접 `new StudyService(...)`로 만들지 않습니다. Spring이 실행 중에 필요한 객체를 넣어 줍니다. 이 방식을 DI라고 합니다. DI를 사용하면 Controller는 HTTP 요청 처리에 집중하고, Service 생성 방식은 Spring에게 맡길 수 있습니다.
 
+`StudyRepository`는 `JpaRepository<StudyEntity, Long>`을 상속합니다. `StudyEntity`는 DB 테이블과 연결되는 클래스이고, `Long`은 id 타입입니다. `save`, `findById`, `deleteById` 같은 기본 DB 메서드는 여기에서 제공됩니다.
+
 ## 생성 요청 흐름
 
 스터디 생성 요청은 다음 순서로 처리됩니다.
@@ -76,13 +78,16 @@ public ResponseEntity<Void> create(@RequestBody CreateStudyRequest request) {
 생성 요청은 Entity로 바로 받지 않고 Request DTO로 받습니다.
 
 ```java
-public record CreateStudyRequest(
-        @NotBlank(message = "제목은 필수입니다.")
-        String title,
-        String content
-) {
+@Getter
+@NoArgsConstructor
+public class CreateStudyRequest {
+    @NotBlank(message = "제목은 필수입니다.")
+    private String title;
+    private String content;
 }
 ```
+
+`@Getter`는 `getTitle()`, `getContent()` 같은 메서드를 Lombok이 대신 만들어 주게 합니다. `@NoArgsConstructor`는 파라미터가 없는 생성자를 만들어 줍니다. Spring은 JSON을 Java 객체로 바꿀 때 이 기본 생성자를 사용합니다.
 
 DTO는 API 입력 형식을 표현합니다. Entity는 DB 테이블과 연결되는 객체입니다. 두 객체를 분리하면 API 요청 형식과 DB 구조를 따로 설명할 수 있습니다.
 
@@ -114,6 +119,34 @@ public ResponseEntity<Void> create(@RequestBody @Valid CreateStudyRequest reques
 
 이 요청은 Service까지 가지 않고 Controller 앞단에서 실패합니다. 이 지점을 확인해야 validation의 위치를 이해할 수 있습니다.
 
+## Optional과 조회 실패 처리
+
+`studyRepository.findById(id)`의 결과는 `StudyEntity`가 아니라 `Optional<StudyEntity>`입니다. id에 맞는 데이터가 없을 수도 있기 때문입니다.
+
+```java
+Optional<StudyEntity> studyOptional = studyRepository.findById(id);
+
+if (studyOptional.isEmpty()) {
+    throw new IllegalArgumentException("스터디가 존재하지 않습니다.");
+}
+
+StudyEntity study = studyOptional.get();
+```
+
+처음에는 `orElseThrow(...)`처럼 짧은 문법보다 위 코드처럼 비어 있는지 확인하고, 있으면 꺼내는 순서를 직접 읽는 편이 좋습니다.
+
+## Transaction 설명
+
+조회 메서드는 데이터를 읽기만 하므로 클래스 위에 `@Transactional(readOnly = true)`를 붙입니다.
+
+```java
+@Transactional(readOnly = true)
+public class StudyService {
+}
+```
+
+생성, 수정, 삭제처럼 DB 상태를 바꾸는 메서드에는 메서드 위에 `@Transactional`을 다시 붙입니다. 트랜잭션 안에서 Entity 값을 바꾸면 메서드가 끝날 때 JPA가 변경 내용을 DB에 반영합니다.
+
 ## 수정 요청 흐름
 
 수정은 생성과 다릅니다. 새 Entity를 만드는 것이 아니라 기존 Entity를 조회한 뒤 값을 바꿉니다.
@@ -132,8 +165,8 @@ Entity에는 값을 바꾸는 메서드가 있습니다.
 
 ```java
 public void update(UpdateStudyRequest request) {
-    if (request.title() != null) this.title = request.title();
-    if (request.content() != null) this.content = request.content();
+    if (request.getTitle() != null) this.title = request.getTitle();
+    if (request.getContent() != null) this.content = request.getContent();
 }
 ```
 
@@ -160,8 +193,8 @@ DELETE /api/v1/studies/{id}
 
 ```java
 public StudyEntity(CreateStudyRequest request) {
-    this.title = request.title();
-    this.content = request.content();
+    this.title = request.getTitle();
+    this.content = request.getContent();
 }
 ```
 

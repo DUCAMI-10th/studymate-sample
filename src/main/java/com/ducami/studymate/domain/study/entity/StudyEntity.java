@@ -3,12 +3,11 @@ package com.ducami.studymate.domain.study.entity;
 import com.ducami.studymate.domain.study.dto.request.CreateStudyRequest;
 import com.ducami.studymate.domain.study.dto.request.UpdateStudyRequest;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
-@Builder
-@AllArgsConstructor
 @Entity(name = "tb_studies")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StudyEntity {
