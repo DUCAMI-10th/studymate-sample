@@ -67,11 +67,7 @@ class StudyControllerTest {
     @DisplayName("스터디 내용만 수정할 수 있다")
     void updateStudyContentOnly() throws Exception {
         UserEntity owner = createUser("content-owner@example.com");
-        StudyEntity study = studyRepository.save(StudyEntity.builder()
-                .title("기존 제목")
-                .content("기존 내용")
-                .owner(owner)
-                .build());
+        StudyEntity study = studyRepository.save(new StudyEntity("기존 제목", "기존 내용", owner));
         String accessToken = login(owner.getEmail());
 
         mockMvc.perform(put("/api/v1/studies/{id}", study.getId())
@@ -108,11 +104,7 @@ class StudyControllerTest {
     void updateStudyByNonOwner() throws Exception {
         UserEntity owner = createUser("owner@example.com");
         UserEntity otherUser = createUser("other@example.com");
-        StudyEntity study = studyRepository.save(StudyEntity.builder()
-                .title("자바 스터디")
-                .content("기초 문법")
-                .owner(owner)
-                .build());
+        StudyEntity study = studyRepository.save(new StudyEntity("자바 스터디", "기초 문법", owner));
 
         String accessToken = login(otherUser.getEmail());
 
@@ -133,11 +125,7 @@ class StudyControllerTest {
     @DisplayName("스터디 제목을 빈 값으로 수정할 수 없다")
     void updateStudyWithBlankTitle() throws Exception {
         UserEntity owner = createUser("owner2@example.com");
-        StudyEntity study = studyRepository.save(StudyEntity.builder()
-                .title("기존 제목")
-                .content("기존 내용")
-                .owner(owner)
-                .build());
+        StudyEntity study = studyRepository.save(new StudyEntity("기존 제목", "기존 내용", owner));
         String accessToken = login(owner.getEmail());
 
         mockMvc.perform(put("/api/v1/studies/{id}", study.getId())
@@ -154,12 +142,7 @@ class StudyControllerTest {
     }
 
     private UserEntity createUser(String email) {
-        return userRepository.save(UserEntity.builder()
-                .name("tester")
-                .email(email)
-                .password(passwordEncoder.encode("password123"))
-                .role(UserRole.USER)
-                .build());
+        return userRepository.save(new UserEntity("tester", email, passwordEncoder.encode("password123"), UserRole.USER));
     }
 
     private String login(String email) throws Exception {

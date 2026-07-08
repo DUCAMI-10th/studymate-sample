@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -34,8 +35,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // Authorization 헤더에서 토큰을 꺼내고, 유효하면 인증 정보를 저장한다.
         if (token != null && jwtProvider.validateToken(token)) {
-            userRepository.findById(jwtProvider.getUserId(token))
-                    .ifPresent(this::setAuthentication);
+            Optional<UserEntity> userOptional = userRepository.findById(jwtProvider.getUserId(token));
+
+            if (userOptional.isPresent()) {
+                setAuthentication(userOptional.get());
+            }
         }
 
         filterChain.doFilter(request, response);

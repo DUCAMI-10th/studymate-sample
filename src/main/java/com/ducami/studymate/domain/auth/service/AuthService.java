@@ -11,6 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -21,8 +23,13 @@ public class AuthService {
 
     @Transactional
     public TokenResponse login(LoginRequest request) {
-        UserEntity user = userRepository.findByEmail(request.email())
-                .orElseThrow(InvalidCredentialsException::new);
+        Optional<UserEntity> userOptional = userRepository.findByEmail(request.email());
+
+        if (userOptional.isEmpty()) {
+            throw new InvalidCredentialsException();
+        }
+
+        UserEntity user = userOptional.get();
 
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
             throw new InvalidCredentialsException();

@@ -50,11 +50,7 @@ class TodoControllerTest {
     void createAndFindAll() throws Exception {
         UserEntity owner = createOwner("backend-owner@example.com");
         UserEntity author = createUser("backend-author@example.com");
-        StudyEntity study = studyRepository.save(StudyEntity.builder()
-                .title("백엔드 스터디")
-                .content("매주 목요일 진행")
-                .owner(owner)
-                .build());
+        StudyEntity study = studyRepository.save(new StudyEntity("백엔드 스터디", "매주 목요일 진행", owner));
         String accessToken = login(author.getEmail());
 
         mockMvc.perform(post("/api/v1/studies/{studyId}/todos", study.getId())
@@ -83,17 +79,8 @@ class TodoControllerTest {
     void updateAndChangeStatus() throws Exception {
         UserEntity owner = createOwner("algo-owner@example.com");
         UserEntity author = createUser("algo-author@example.com");
-        StudyEntity study = studyRepository.save(StudyEntity.builder()
-                .title("알고리즘 스터디")
-                .content("주 2회 문제 풀이")
-                .owner(owner)
-                .build());
-        TodoEntity todo = todoRepository.save(TodoEntity.builder()
-                .study(study)
-                .author(author)
-                .content("백준 10문제 풀기")
-                .status(TodoStatus.PENDING)
-                .build());
+        StudyEntity study = studyRepository.save(new StudyEntity("알고리즘 스터디", "주 2회 문제 풀이", owner));
+        TodoEntity todo = todoRepository.save(new TodoEntity(study, author, "백준 10문제 풀기", TodoStatus.PENDING));
         String accessToken = login(author.getEmail());
 
         mockMvc.perform(put("/api/v1/studies/{studyId}/todos/{todoId}", study.getId(), todo.getId())
@@ -129,17 +116,8 @@ class TodoControllerTest {
     void deleteTodo() throws Exception {
         UserEntity owner = createOwner("cs-owner@example.com");
         UserEntity author = createUser("cs-author@example.com");
-        StudyEntity study = studyRepository.save(StudyEntity.builder()
-                .title("CS 스터디")
-                .content("운영체제 발표 준비")
-                .owner(owner)
-                .build());
-        TodoEntity todo = todoRepository.save(TodoEntity.builder()
-                .study(study)
-                .author(author)
-                .content("세마포어 정리")
-                .status(TodoStatus.PENDING)
-                .build());
+        StudyEntity study = studyRepository.save(new StudyEntity("CS 스터디", "운영체제 발표 준비", owner));
+        TodoEntity todo = todoRepository.save(new TodoEntity(study, author, "세마포어 정리", TodoStatus.PENDING));
         String accessToken = login(author.getEmail());
 
         mockMvc.perform(delete("/api/v1/studies/{studyId}/todos/{todoId}", study.getId(), todo.getId())
@@ -158,17 +136,8 @@ class TodoControllerTest {
         UserEntity owner = createOwner("todo-owner@example.com");
         UserEntity author = createUser("todo-author@example.com");
         UserEntity otherUser = createUser("todo-other@example.com");
-        StudyEntity study = studyRepository.save(StudyEntity.builder()
-                .title("네트워크 스터디")
-                .content("TCP/IP 발표")
-                .owner(owner)
-                .build());
-        TodoEntity todo = todoRepository.save(TodoEntity.builder()
-                .study(study)
-                .author(author)
-                .content("3-way handshake 정리")
-                .status(TodoStatus.PENDING)
-                .build());
+        StudyEntity study = studyRepository.save(new StudyEntity("네트워크 스터디", "TCP/IP 발표", owner));
+        TodoEntity todo = todoRepository.save(new TodoEntity(study, author, "3-way handshake 정리", TodoStatus.PENDING));
 
         String accessToken = login(otherUser.getEmail());
 
@@ -189,11 +158,7 @@ class TodoControllerTest {
     @DisplayName("인증 없이 Todo를 생성할 수 없다")
     void createTodoWithoutToken() throws Exception {
         UserEntity owner = createOwner("todo-public-owner@example.com");
-        StudyEntity study = studyRepository.save(StudyEntity.builder()
-                .title("운영체제 스터디")
-                .content("프로세스 발표")
-                .owner(owner)
-                .build());
+        StudyEntity study = studyRepository.save(new StudyEntity("운영체제 스터디", "프로세스 발표", owner));
 
         mockMvc.perform(post("/api/v1/studies/{studyId}/todos", study.getId())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -211,12 +176,7 @@ class TodoControllerTest {
     }
 
     private UserEntity createUser(String email) {
-        return userRepository.save(UserEntity.builder()
-                .name("user")
-                .email(email)
-                .password(passwordEncoder.encode("password123"))
-                .role(UserRole.USER)
-                .build());
+        return userRepository.save(new UserEntity("user", email, passwordEncoder.encode("password123"), UserRole.USER));
     }
 
     private String login(String email) throws Exception {

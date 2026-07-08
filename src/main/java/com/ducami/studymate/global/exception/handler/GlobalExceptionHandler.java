@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -20,11 +21,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ApplicationException.class)
     public ResponseEntity<ApiResponse<ErrorResponse>> handleApplicationException(ApplicationException e) {
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .code(e.getStatusCode().getCode())
-                .message(e.getMessage())
-                .timestamp(java.time.LocalDateTime.now())
-                .build();
+        ErrorResponse errorResponse = new ErrorResponse(
+                e.getStatusCode().getCode(),
+                e.getMessage(),
+                LocalDateTime.now(),
+                null
+        );
 
         return ApiResponse.error(e.getStatusCode(), errorResponse);
     }

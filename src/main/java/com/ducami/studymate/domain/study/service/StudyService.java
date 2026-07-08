@@ -14,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,9 +30,15 @@ public class StudyService {
     }
 
     public List<StudySummaryResponse> findAll() {
-        return studyRepository.findAll().stream()
-                .map(StudySummaryResponse::from)
-                .toList();
+        List<StudyEntity> studies = studyRepository.findAll();
+        List<StudySummaryResponse> responses = new ArrayList<>();
+
+        for (StudyEntity study : studies) {
+            StudySummaryResponse response = StudySummaryResponse.from(study);
+            responses.add(response);
+        }
+
+        return responses;
     }
 
     @Transactional
@@ -55,13 +63,23 @@ public class StudyService {
     }
 
     private StudyEntity findStudyOrThrow(Long id) {
-        return studyRepository.findById(id)
-                .orElseThrow(StudyNotFoundException::new);
+        Optional<StudyEntity> studyOptional = studyRepository.findById(id);
+
+        if (studyOptional.isEmpty()) {
+            throw new StudyNotFoundException();
+        }
+
+        return studyOptional.get();
     }
 
     private UserEntity findCurrentUserOrThrow(Long currentUserId) {
-        return userRepository.findById(currentUserId)
-                .orElseThrow(AuthenticatedUserNotFoundException::new);
+        Optional<UserEntity> userOptional = userRepository.findById(currentUserId);
+
+        if (userOptional.isEmpty()) {
+            throw new AuthenticatedUserNotFoundException();
+        }
+
+        return userOptional.get();
     }
 
 }

@@ -59,12 +59,7 @@ class UserControllerTest {
     @Test
     @DisplayName("중복 이메일로 회원가입하면 예외가 발생한다")
     void signupWithDuplicateEmail() throws Exception {
-        userRepository.save(UserEntity.builder()
-                .name("existing")
-                .email("tester@example.com")
-                .password(passwordEncoder.encode("password123"))
-                .role(UserRole.USER)
-                .build());
+        userRepository.save(new UserEntity("existing", "tester@example.com", passwordEncoder.encode("password123"), UserRole.USER));
 
         String request = """
                 {
@@ -86,12 +81,7 @@ class UserControllerTest {
     @Test
     @DisplayName("로그인에 성공하면 access token과 refresh token을 발급한다")
     void login() throws Exception {
-        userRepository.save(UserEntity.builder()
-                .name("tester")
-                .email("tester@example.com")
-                .password(passwordEncoder.encode("password123"))
-                .role(UserRole.USER)
-                .build());
+        userRepository.save(new UserEntity("tester", "tester@example.com", passwordEncoder.encode("password123"), UserRole.USER));
 
         String request = """
                 {
@@ -120,12 +110,7 @@ class UserControllerTest {
     @Test
     @DisplayName("Access token으로도 스터디 API에 접근할 수 있다")
     void accessWithToken() throws Exception {
-        userRepository.save(UserEntity.builder()
-                .name("tester")
-                .email("tester@example.com")
-                .password(passwordEncoder.encode("password123"))
-                .role(UserRole.USER)
-                .build());
+        userRepository.save(new UserEntity("tester", "tester@example.com", passwordEncoder.encode("password123"), UserRole.USER));
 
         MvcResult loginResult = mockMvc.perform(post("/api/v1/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
