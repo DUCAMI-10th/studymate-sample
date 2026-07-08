@@ -48,21 +48,9 @@ public class ApiResponse<T> {
         );
     }
 
-    public static ResponseEntity<ApiResponse<Void>> created() {
-        return ResponseEntity.status(201).body(
-                new ApiResponse<>(null, 201, null)
-        );
-    }
-
     public static <T> ResponseEntity<ApiResponse<T>> created(T data, String message) {
         return ResponseEntity.status(201).body(
                 new ApiResponse<>(data, 201, message)
-        );
-    }
-
-    public static ResponseEntity<ApiResponse<Void>> created(String message) {
-        return ResponseEntity.status(201).body(
-                new ApiResponse<>(null, 201, message)
         );
     }
 
