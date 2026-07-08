@@ -55,7 +55,8 @@ class StudyControllerTest {
                                   "content": "매주 월요일 진행"
                                 }
                                 """))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.data").isNumber());
 
         StudyEntity savedStudy = studyRepository.findAll().getFirst();
         assertEquals(owner.getId(), savedStudy.getOwner().getId());
@@ -74,7 +75,8 @@ class StudyControllerTest {
                                 }
                                 """))
                 .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.status", is(401)));
+                .andExpect(jsonPath("$.success", is(false)))
+                .andExpect(jsonPath("$.error.code", is("GLOBAL_401")));
     }
 
     @Test
@@ -99,8 +101,8 @@ class StudyControllerTest {
                                 }
                                 """))
                 .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.status", is(403)))
-                .andExpect(jsonPath("$.message", is("스터디 작성자만 수정/삭제할 수 있습니다.")));
+                .andExpect(jsonPath("$.success", is(false)))
+                .andExpect(jsonPath("$.error.message", is("스터디 작성자만 수정/삭제할 수 있습니다.")));
     }
 
     @Test
@@ -123,8 +125,8 @@ class StudyControllerTest {
                                 }
                                 """))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status", is(400)))
-                .andExpect(jsonPath("$.data.code", is("GLOBAL_400")));
+                .andExpect(jsonPath("$.success", is(false)))
+                .andExpect(jsonPath("$.error.code", is("GLOBAL_400")));
     }
 
     private UserEntity createUser(String email) {

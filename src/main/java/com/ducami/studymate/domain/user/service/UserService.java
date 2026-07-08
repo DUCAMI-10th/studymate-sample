@@ -3,9 +3,36 @@ package com.ducami.studymate.domain.user.service;
 import com.ducami.studymate.domain.user.dto.request.SignupRequest;
 import com.ducami.studymate.domain.user.dto.response.SignupResponse;
 import com.ducami.studymate.domain.user.dto.response.UserResponse;
+import com.ducami.studymate.domain.user.entity.UserEntity;
+import com.ducami.studymate.domain.user.exception.EmailAlreadyExistsException;
+import com.ducami.studymate.domain.user.exception.UserNotFoundException;
+import com.ducami.studymate.domain.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-public interface UserService {
-    SignupResponse signup(SignupRequest request);
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class UserService {
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    @Transactional
+    public SignupResponse signup(SignupRequest request) {
+        if (userRepository.existsByEmail(request.email())) {
+            throw new EmailAlreadyExistsException();
+        }
 
-    UserResponse getUser(Long userId);
+        UserEntity user = UserEntity.signup(request, passwordEncoder.encode(request.password()));
+        return SignupResponse.from(userRepository.save(user));
+    }
+    @Transactional
+    public UserResponse getUser(Long userId) {
+        return UserResponse.from(
+                userRepository.findById(userId)
+                    .orElseThrow(UserNotFoundException::new)
+        );
+    }
 }

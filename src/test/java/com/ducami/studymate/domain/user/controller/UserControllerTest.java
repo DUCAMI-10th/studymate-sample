@@ -49,8 +49,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(request))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.status", is(201)))
-                .andExpect(jsonPath("$.message", is("회원가입에 성공했습니다.")))
+                .andExpect(jsonPath("$.success", is(true)))
                 .andExpect(jsonPath("$.data.name", is("tester")))
                 .andExpect(jsonPath("$.data.email", is("tester@example.com")))
                 .andExpect(jsonPath("$.data.role", is("USER")));
@@ -78,9 +77,9 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(request))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.status", is(409)))
-                .andExpect(jsonPath("$.message", is("이미 사용 중인 이메일입니다.")))
-                .andExpect(jsonPath("$.data.code", is("USER_409")));
+                .andExpect(jsonPath("$.success", is(false)))
+                .andExpect(jsonPath("$.error.message", is("이미 사용 중인 이메일입니다.")))
+                .andExpect(jsonPath("$.error.code", is("USER_409")));
     }
 
     @Test
@@ -104,8 +103,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(request))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status", is(200)))
-                .andExpect(jsonPath("$.message", is("로그인에 성공했습니다.")))
+                .andExpect(jsonPath("$.success", is(true)))
                 .andExpect(jsonPath("$.data.accessToken").isNotEmpty());
     }
 
@@ -114,7 +112,7 @@ class UserControllerTest {
     void accessWithoutToken() throws Exception {
         mockMvc.perform(get("/api/v1/studies"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status", is(200)));
+                .andExpect(jsonPath("$.success", is(true)));
     }
 
     @Test
@@ -146,6 +144,6 @@ class UserControllerTest {
         mockMvc.perform(get("/api/v1/studies")
                         .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status", is(200)));
+                .andExpect(jsonPath("$.success", is(true)));
     }
 }

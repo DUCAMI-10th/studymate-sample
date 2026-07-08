@@ -35,13 +35,13 @@ public class TodoController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> create(
+    public ResponseEntity<ApiResponse<Long>> create(
             @PathVariable Long studyId,
             @RequestBody @Valid CreateTodoRequest request,
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
-        todoService.save(studyId, request, userPrincipal.getUserId());
-        return ApiResponse.created();
+        Long todoId = todoService.save(studyId, request, userPrincipal.getUserId());
+        return ApiResponse.created(todoId);
     }
 
     @PutMapping("/{todoId}")

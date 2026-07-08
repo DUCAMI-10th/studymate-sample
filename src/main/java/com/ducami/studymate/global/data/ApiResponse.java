@@ -22,16 +22,11 @@ public record ApiResponse<T>(
     }
 
     public static <T> ResponseEntity<ApiResponse<T>> ok() {
-        return ResponseEntity.ok(new ApiResponse<>(null));
+        return ResponseEntity.ok(new ApiResponse<>(true, null, null));
     }
 
     public static <T> ResponseEntity<ApiResponse<T>> ok(T data) {
         return ResponseEntity.ok(new ApiResponse<>(data));
-    }
-
-    public static <T> ResponseEntity<ApiResponse<T>> created() {
-        return ResponseEntity.status(201)
-                .body(new ApiResponse<>(null));
     }
 
     public static <T> ResponseEntity<ApiResponse<T>> created(T data) {

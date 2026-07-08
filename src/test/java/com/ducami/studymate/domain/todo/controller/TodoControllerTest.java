@@ -64,14 +64,13 @@ class TodoControllerTest {
                                 {
                                   "content": "1주차 과제 제출"
                                 }
-                                """))
+                """))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.status", is(201)))
-                .andExpect(jsonPath("$.message", is("Todo를 등록했습니다.")));
+                .andExpect(jsonPath("$.data").isNumber());
 
         mockMvc.perform(get("/api/v1/studies/{studyId}/todos", study.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status", is(200)))
+                .andExpect(jsonPath("$.success", is(true)))
                 .andExpect(jsonPath("$.data", hasSize(1)))
                 .andExpect(jsonPath("$.data[0].content", is("1주차 과제 제출")))
                 .andExpect(jsonPath("$.data[0].status", is("PENDING")));
@@ -104,7 +103,7 @@ class TodoControllerTest {
                                 }
                                 """))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is("Todo를 수정했습니다.")));
+                .andExpect(jsonPath("$.success", is(true)));
 
         mockMvc.perform(patch("/api/v1/studies/{studyId}/todos/{todoId}/status", study.getId(), todo.getId())
                         .header("Authorization", "Bearer " + accessToken)
@@ -115,7 +114,7 @@ class TodoControllerTest {
                                 }
                                 """))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is("Todo 상태를 변경했습니다.")));
+                .andExpect(jsonPath("$.success", is(true)));
 
         mockMvc.perform(get("/api/v1/studies/{studyId}/todos/{todoId}", study.getId(), todo.getId()))
                 .andExpect(status().isOk())
@@ -144,7 +143,7 @@ class TodoControllerTest {
         mockMvc.perform(delete("/api/v1/studies/{studyId}/todos/{todoId}", study.getId(), todo.getId())
                         .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is("Todo를 삭제했습니다.")));
+                .andExpect(jsonPath("$.success", is(true)));
 
         mockMvc.perform(get("/api/v1/studies/{studyId}/todos", study.getId()))
                 .andExpect(status().isOk())
@@ -180,8 +179,8 @@ class TodoControllerTest {
                                 }
                                 """))
                 .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.status", is(403)))
-                .andExpect(jsonPath("$.message", is("Todo 작성자만 수정/삭제/상태변경할 수 있습니다.")));
+                .andExpect(jsonPath("$.success", is(false)))
+                .andExpect(jsonPath("$.error.message", is("Todo 작성자만 수정/삭제/상태변경할 수 있습니다.")));
     }
 
     @Test
@@ -202,7 +201,8 @@ class TodoControllerTest {
                                 }
                                 """))
                 .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.status", is(401)));
+                .andExpect(jsonPath("$.success", is(false)))
+                .andExpect(jsonPath("$.error.code", is("GLOBAL_401")));
     }
 
     private UserEntity createOwner(String email) {
